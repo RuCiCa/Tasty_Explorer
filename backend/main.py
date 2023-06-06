@@ -11,8 +11,6 @@ app = Flask(__name__)
 CORS(app, resources={r"/*":{'origins':"*"}})
 engine = create_engine("mysql+pymysql://gdsc:NCCUgdsc1234!@34.81.186.58:3306/bricksdata?charset=utf8mb4")
 
-
-
 app.config.from_object(__name__)
 
 

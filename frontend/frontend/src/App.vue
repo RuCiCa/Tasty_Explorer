@@ -7,9 +7,22 @@
 <style>
 /* 會影響所有頁面的css */
 
+html,
 body {
-  margin: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 auto;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
+
+/* body {
+  margin: 0;
+} */
 
 @import url('http://fonts.googleapis.com/css?family=Noto+Sans+TC:100,300,400,500,700,900');
 

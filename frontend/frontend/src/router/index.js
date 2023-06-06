@@ -1,15 +1,12 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Bricks from "../components/BricksTest.vue";
-<<<<<<< HEAD
 import Login from "../components/Login.vue";
 import Register from "../components/Register.vue";
 import HomePage from "../components/Homepage.vue";
 import Login_2 from "../components/Login_2.vue";
 import Register_2 from "../components/Register_2.vue";
 import Homepage_2 from "../components/Homepage_2.vue";
-=======
->>>>>>> d452783 (蔡杞祥在試著Merge)
 
 Vue.use(VueRouter);
 
@@ -20,7 +17,6 @@ const routes = [
     path: "/bricks",
     name: "BricksTest",
     component: Bricks,
-<<<<<<< HEAD
   },
   {
     path: "/register",
@@ -51,8 +47,6 @@ const routes = [
     path: "/homepage_2",
     name: "Homapage_2",
     component: Homepage_2,
-=======
->>>>>>> d452783 (蔡杞祥在試著Merge)
   },
 ];
 

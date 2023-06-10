@@ -8,6 +8,10 @@ import Login_2 from "../components/Login_2.vue";
 import Register_2 from "../components/Register_2.vue";
 import Homepage_2 from "../components/Homepage_2.vue";
 import following from "../components/following.vue";
+import list from "../components/list.vue";
+import diary from "../components/diary.vue";
+import diary_one from "../components/diary_one.vue";
+
 
 Vue.use(VueRouter);
 
@@ -53,6 +57,21 @@ const routes = [
     path: "/following",
     name: "following",
     component: following,
+  },
+  {
+    path: "/list",
+    name: "list",
+    component: list,
+  },
+  {
+    path: "/diary",
+    name: "diary",
+    component: diary,
+  },
+  {
+    path: "/diary_one",
+    name: "diary_one",
+    component: diary_one,
   },
 ];
 

@@ -9,6 +9,8 @@ import Register_2 from "../components/Register_2.vue";
 import Homepage_2 from "../components/Homepage_2.vue";
 import following from "../components/following.vue";
 import list from "../components/list.vue";
+import lists from "../components/lists.vue";
+import search from "../components/search.vue";
 import diary from "../components/diary.vue";
 import review from "../components/review.vue";
 import diary_one from "../components/diary_one.vue";
@@ -63,6 +65,16 @@ const routes = [
     path: "/list",
     name: "list",
     component: list,
+  },
+  {
+    path: "/lists",
+    name: "lists",
+    component: lists,
+  },
+  {
+    path: "/search",
+    name: "search",
+    component: search,
   },
   {
     path: "/review",

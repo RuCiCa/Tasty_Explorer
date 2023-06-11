@@ -12,7 +12,6 @@
             <div class="follower">
               <div class="num">1</div>
               <div class="text">追蹤者</div>
-
             </div>
             <div class="following">
               <div class="num">10</div>
@@ -51,12 +50,10 @@
 
           </div>
         </div>
-        <div class="nav"> <img class="search"
-            src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTl7ZE5_0rjyTos3ZuVn6DRQeGcJTcOduSNXuybIvDkMCU4nmPU" /><img
-            class="more"
-            src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTl7ZE5_0rjyTos3ZuVn6DRQeGcJTcOduSNXuybIvDkMCU4nmPU" /><img
-            class="profile"
-            src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTl7ZE5_0rjyTos3ZuVn6DRQeGcJTcOduSNXuybIvDkMCU4nmPU" />
+        <div class="nav">
+          <img class="search" src="../assets/search.png" />
+          <img class="more" src="../assets/more.png" />
+          <img class="profile" src="../assets/profile_pressed.png" />
         </div>
       </div>
     </div>
@@ -340,9 +337,9 @@ body {
 
 .screen .nav .profile {
   position: absolute;
-  width: 36px;
-  height: 36px;
-  top: 15px;
+  width: 60px;
+  height: 60px;
+  top: 3px;
   left: 311px;
 }
 

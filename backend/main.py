@@ -57,47 +57,49 @@ def query_data(conn, query):
 def get_personal_info(conn, id):
     info_query = """
     SELECT user_name, profile_photo
-        FROM user
-        WHERE user_id = {};
+        FROM users
+        WHERE id = {};
     """.format(id)
 
     diary_query = """
     SELECT
-        diary.resturant_id, diary.date_visited, diary.is_public, diary.review, 
-        diary.photo, diary.user_id, user.user_name, restaurant.name
+        diary.restaurant_id, diary.date_visited, diary.is_public,  
+        diary.photo, diary.user_id, users.user_name, restaurants.restaurant_name
     FROM
         diary
-        JOIN user ON diary.user_id = user.user_id
-        JOIN restaurant ON diary.resturant_id = restaurant.restaurant_id
+        JOIN users ON diary.user_id = users.id
+        JOIN restaurants ON diary.restaurant_id = restaurants.id
     WHERE
         diary.user_id = {};
     """.format(id)
 
     follower_query = """
-    SELECT user.user_name, user.following, user.profile_photo
+    SELECT users.user_name, following_relation.following_id, users.profile_photo
     FROM 
         following_relation
-        JOIN user ON following_relation.followers = user.user_id
-    WHERE followers = {};
+        JOIN users ON following_relation.followers_id = users.id
+    WHERE followers_id = {};
     """.format(id)
 
     following_query = """
-    SELECT user_name, followers, profile_photo
+    SELECT users.user_name, following_relation.followers_id, users.profile_photo
     FROM 
         following_relation
-        JOIN user ON following_relation.following = user.user_id
-    WHERE following_relation.following = {};
+        JOIN users ON following_relation.following_id = users.id
+    WHERE following_relation.following_id = {};
     """.format(id)
 
     comment_query = """
-    SELECT feedback_id, restaurant_id, following, profile_photo
-        FROM Feedback_Rating
-        WHERE user_id = {};
+    SELECT feedback_rating.id, restaurants.restaurant_name, AVG(feedback_rating.total_rating) AS avg_rating, feedback_rating.feedback, feedback_rating.photo, feedback_rating.post_date
+    FROM feedback_rating
+    JOIN restaurants ON feedback_rating.restaurant_id = restaurants.id
+    WHERE feedback_rating.user_id = {}
+    GROUP BY feedback_rating.id, restaurants.restaurant_name, feedback_rating.feedback, feedback_rating.photo, feedback_rating.post_date;
     """.format(id)
 
     list_query = """
-    SELECT list_id, restaurant_id, following, profile_photo
-        FROM list
+    SELECT id, list_name
+        FROM lists
         WHERE user_id = {};
     """.format(id)
 
@@ -123,70 +125,6 @@ def get_personal_info(conn, id):
 def greetings():
     return("Hello, world!")
 
-# @app.route("/personal_info", methods=["POST"])
-# def get_personal_info():
-#     response_object = {"status": "success"}
-#     if request.method == "POST":
-#         try:
-#             conn = engine.connect()
-#             post_data = request.get_json()
-#             id = post_data.get("user_id")
-#             info_query = """
-#                 SELECT user_name, followers, following, profile_photo
-#                 FROM user
-#                 WHERE user_id = {};
-#             """.format(id)
-
-#             diary_query = """
-#             SELECT resturant_id, date_visited, is_public, review, photo 
-#             FROM diary 
-#             WHERE user_id = {};
-#             """.format(id)
-
-#             follower_query = """
-#             SELECT user.user_name, user.following, user.profile_photo
-#             FROM 
-#                 following_relation
-#                 JOIN user ON following_relation.followers = user.user_id
-#             WHERE followers = {};
-#             """.format(id)
-
-#             following_query = """
-#             SELECT user_name, followers, profile_photo
-#             FROM 
-#                 following_relation
-#                 JOIN user ON following_relation.following = user.user_id
-#             WHERE following_relation.following = {};
-#             """.format(id)
-
-#             comment_query = """
-#             SELECT feedback_id, restaurant_id, following, profile_photo
-#                 FROM Feedback_Rating
-#                 WHERE user_id = {};
-#             """.format(id)
-
-#             info = query_data(conn, info_query)
-#             diary = query_data(conn, diary_query)
-#             follower = query_data(conn, follower_query)
-#             following = query_data(conn, following_query)
-#             comment = query_data(conn, comment_query)
-
-
-
-#             response_object["diary"] = diary
-#             response_object["info"] = info
-#             response_object["follower"] = follower
-#             response_object["following"] = following
-#             response_object["comment"] = comment
-
-#             conn.close()
-        
-#         except Exception as e:
-#             response_object["status"] = "failed"
-#             response_object["message"] = str(e)
-
-#     return jsonify(response_object)
-
 @app.route("/follow", methods=["GET"])
 def get_follow():
     response_object = {"status": "success"}
@@ -208,6 +146,7 @@ def get_follow():
     except Exception as e:
         response_object["status"] = "failed"
         response_object["message"] = str(e)
+
     
     return jsonify(response_object)
 
@@ -254,7 +193,7 @@ def follow():
 
     return jsonify(response_object)
 
-@app.route("follower", methods=["GET"])
+@app.route("/follower", methods=["GET"])
 def get_follower():
     response_object = {"status": "success"}
     try:
@@ -278,7 +217,7 @@ def get_follower():
     
     return jsonify(response_object)
 
-@app.route("follower", methods=["POST"])
+@app.route("/follower", methods=["POST"])
 def follower():
     response_object = {"status": "success"}
     try:
@@ -358,12 +297,12 @@ def get_diary():
         
         diary_query = """
             SELECT
-                diary.resturant_id, diary.date_visited, diary.is_public, diary.review, 
-                diary.photo, diary.user_id, user.user_name, restaurant.name
+                diary.restaurant_id, diary.date_visited, diary.is_public, 
+                diary.photo, diary.user_id, users.user_name, restaurants.restaurant_name
             FROM
                 diary
-                JOIN user ON diary.user_id = user.user_id
-                JOIN restaurant ON diary.resturant_id = restaurant.restaurant_id
+                JOIN users ON diary.user_id = users.user_id
+                JOIN restaurants ON diary.restaurant_id = restaurants.id
             WHERE
                 diary.diary_id = {};
         """.format(id)
@@ -425,12 +364,12 @@ def get_edit_diary():
         
         diary_query = """
             SELECT
-                diary.resturant_id, diary.date_visited, 
-                diary.photo, diary.user_id, user.user_name, restaurant.name
+                diary.restaurant_id, diary.date_visited, 
+                diary.photo, diary.user_id, users.user_name, restaurants.restaurant_name
             FROM
                 diary
-                JOIN user ON diary.user_id = user.user_id
-                JOIN restaurant ON diary.resturant_id = restaurant.restaurant_id
+                JOIN users ON diary.user_id = users.user_id
+                JOIN restaurants ON diary.restaurant_id = restaurants.id
             WHERE
                 diary.diary_id = {};
         """.format(id)
@@ -508,11 +447,11 @@ def get_list_info():
         id = get_data.get("list_id")
         diary_query = """
             SELECT
-                list_id, list_name
+                id, list_name
             FROM
-                list
+                lists
             WHERE
-                list_id = {};
+                id = {};
         """.format(id)
         diary = query_data(conn, diary_query)
         response_object["diary"] = diary
@@ -637,9 +576,9 @@ def get_comment():
         response_object["comment"] = comment
 
         diary_query = """
-            SELECT user.user_name, user.profile_photo
+            SELECT users.user_name, users.profile_photo
                 FROM diary
-                JOIN user ON diary.user_id = user.user_id
+                JOIN users ON diary.user_id = users.user_id
                 WHERE restaurant_id = {};
         """.format(id)
         diary = query_data(conn, diary_query)

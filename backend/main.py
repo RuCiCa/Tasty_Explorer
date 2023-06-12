@@ -9,12 +9,13 @@ today_weekday = datetime.date.today().weekday()
 
 app = Flask(__name__)
 CORS(app, resources={r"/*":{'origins':"*"}})
-engine = create_engine("mysql+pymysql://gdsc:NCCUgdsc1234!@34.81.186.58:3306/bricksdata?charset=utf8mb4")
+# engine = create_engine("mysql+pymysql://gdsc:NCCUgdsc1234!@34.81.186.58:3306/bricksdata?charset=utf8mb4")
+engine = create_engine("mysql+pymysql://root:Yu0!newcode@localhost:3306/tastyexplorerdb?charset=utf8mb4")
 
 app.config.from_object(__name__)
 
 
-
+  
 def open_check(id, conn):
     open_query = """
             SELECT
@@ -58,49 +59,50 @@ def query_data(conn, query):
 def greetings():
     return("Hello, world!")
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    response_object = {"status": "success"}
-    if request.method == "POST":
-        conn = engine.connect()
-        response_object = {"status": "success"}
-        post_data = request.get_json()
+#login 先不用
+# @app.route("/login", methods=["GET", "POST"])
+# def login():
+#     response_object = {"status": "success"}
+#     if request.method == "POST":
+#         conn = engine.connect()
+#         response_object = {"status": "success"}
+#         post_data = request.get_json()
         
-    else:
-        response_object["items"] = U_DATA
+#     else:
+#         response_object["items"] = U_DATA
 
-    return jsonify(response_object)
+#     return jsonify(response_object)
 
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    response_object = {"status": "success"}
-    if request.method == "POST":
-        try:
-            conn = engine.connect()
-            post_data = request.get_json()
-            username = post_data.get("user_name")
-            email = post_data.get("user_email")
-            password = post_data.get("user_password")
+# register 先不用
+# @app.route("/register", methods=["GET", "POST"])
+# def register():
+#     response_object = {"status": "success"}
+#     if request.method == "POST":
+#         try:
+#             conn = engine.connect()
+#             post_data = request.get_json()
+#             username = post_data.get("user_name")
+#             email = post_data.get("user_email")
+#             password = post_data.get("user_password")
 
-            reg_query = """
-                SELECT * FROM user WHERE user_name = '{}' OR user_email = '{}'
-            """.format(post_data.get("user_name"), post_data.get("user_email"))
-            result = conn.execute(reg_query)
+#             reg_query = """
+#                 SELECT * FROM user WHERE user_name = '{}' OR user_email = '{}'
+#             """.format(post_data.get("user_name"), post_data.get("user_email"))
+#             result = conn.execute(reg_query)
 
-            if result.fetchone():
-                response_object["status"] = "failed"
-                response_object["message"] = "註冊失敗"
-            else:
-                insert_query = f"INSERT INTO user (user_name, user_password, user_email) VALUES ('{username}', '{password}', '{email}')"
-                response_object["message"] = "註冊成功"
-                conn.execute(text(insert_query))
-                conn.execute(text("COMMIT;"))
-            conn.close()
+#             if result.fetchone():
+#                 response_object["status"] = "failed"
+#                 response_object["message"] = "註冊失敗"
+#             else:
+#                 insert_query = f"INSERT INTO user (user_name, user_password, user_email) VALUES ('{username}', '{password}', '{email}')"
+#                 response_object["message"] = "註冊成功"
+#                 conn.execute(text(insert_query))
+#                 conn.execute(text("COMMIT;"))
+#             conn.close()
         
-        except Exception as e:
-            response_object["status"] = "failed"
-            response_object["message"] = str(e)
-
+#         except Exception as e:
+#             response_object["status"] = "failed"
+#             response_object["message"] = str(e)
 
 
 @app.route("/personal_info", methods=["POST"])
@@ -112,9 +114,25 @@ def get_personal_info():
             post_data = request.get_json()
             id = post_data.get("user_id")
             info_query = """
-                SELECT user_name, followers, following, profile_photo
-                FROM user
-                WHERE user_id = {};
+                SELECT u.user_name, u.profile_photo
+                FROM users u
+                WHERE id = {};
+            """.format(id)
+
+            follower_query = """
+                SELECT f.followers_id, u.user_name, u.profile_photo
+                FROM following_relation f
+                JOIN users u
+                ON f.followers_id = u.user_id
+                WHERE f.following_id = {};
+            """.format(id)
+
+            following_query = """
+                SELECT f.following_id, u.user_name, u.profile_photo
+                FROM following_relation f
+                JOIN users u
+                ON f.following_id = u.user_id
+                WHERE f.followers_id = {};
             """.format(id)
 
             diary_query = """
@@ -595,6 +613,71 @@ def add_list():
         response_object["status"] = "failed"
         response_object["message"] = str(e)
 
+
+@app.route('/search', methods=['POST'])
+def search():
+
+    response_object = {'status': 'success'}
+    try:
+        conn = engine.connect()
+    except:
+        response_object['status'] = "connect failure"
+
+    global search_content
+    search_content = request.get_json().get("search_content")
+    place_list = request.get_json().get("place_list")
+    type_list = request.get_json().get("type_list")
+    S_DATA = []
+
+    try:
+        searchResult = f"""
+            SELECT r.restaurant_name, r.address, r.phone, AVG(f.total_rating) AS total_rating, COUNT(f.user_id) AS rating_num 
+            FROM restaurant r
+            JOIN (
+                SELECT total_rating, user_id, restaurant_id
+                FROM feedback_rating
+            ) f
+            ON r.id = f.restaurant_id
+            
+
+        ;"""
+
+        result = conn.execute(text(searchResult))
+        cols = list(result.keys())
+        data = [dict(zip(cols, row)) for row in result.fetchall()]
+
+        for restaurant_info in data:
+            if lcs(restaurant_info) > 0:
+                S_DATA.append(restaurant_info)
+
+        S_DATA.sort(key=lcs, reverse=True)
+
+        response_object['items'] = S_DATA
+    except:
+        response_object['status'] = "algorithm failure"
+
+    result.close()
+    conn.close()
+
+    return jsonify(response_object)
+
+
+def lcs(data):
+    str1 = search_content
+    str2 = data['restaurant_name']
+    str1_len = len(str1)
+    str2_len = len(str2)
+
+    dp = [[0 for x in range(str1_len + 1)] for y in range(str2_len + 1)]
+
+    for i in range(1, str2_len + 1):
+        for j in range(1, str1_len + 1):
+            if (str1[j - 1] == str2[i - 1]):
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+
+    return dp[str2_len][str1_len]
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -301,7 +301,7 @@ def get_diary():
                 diary.photo, diary.user_id, users.user_name, restaurants.restaurant_name
             FROM
                 diary
-                JOIN users ON diary.user_id = users.user_id
+                JOIN users ON diary.user_id = users.id
                 JOIN restaurants ON diary.restaurant_id = restaurants.id
             WHERE
                 diary.diary_id = {};
@@ -336,7 +336,7 @@ def post_diary():
         photo = post_data.get("photo")
 
         diary_query = """
-            INSERT INTO diary (restaurant_id, user_id, content, photo)
+            INSERT INTO diary (restaurant_id, user_id, diary_content, photo)
             VALUES 
             ({}, {}, "{}", "{}");
         """.format(res_id, user_id, content, photo)
@@ -360,18 +360,18 @@ def get_edit_diary():
     try:
         conn = engine.connect()
         get_data = request.get_json()
-        id = get_data.get("dairy_id")
+        id = get_data.get("diary_id")
         
         diary_query = """
             SELECT
-                diary.restaurant_id, diary.date_visited, 
+                diary.restaurant_id, diary.date_visited, diary.diary_content,
                 diary.photo, diary.user_id, users.user_name, restaurants.restaurant_name
             FROM
                 diary
-                JOIN users ON diary.user_id = users.user_id
+                JOIN users ON diary.user_id = users.id
                 JOIN restaurants ON diary.restaurant_id = restaurants.id
             WHERE
-                diary.diary_id = {};
+                diary.id = {};
         """.format(id)
         diary = query_data(conn, diary_query)
         response_object["diary"] = diary
@@ -578,7 +578,7 @@ def get_comment():
         diary_query = """
             SELECT users.user_name, users.profile_photo
                 FROM diary
-                JOIN users ON diary.user_id = users.user_id
+                JOIN users ON diary.user_id = users.id
                 WHERE restaurant_id = {};
         """.format(id)
         diary = query_data(conn, diary_query)

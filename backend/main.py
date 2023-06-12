@@ -103,6 +103,8 @@ def get_personal_info(conn, id):
         WHERE user_id = {};
     """.format(id)
 
+    
+
     info = query_data(conn, info_query)
     diary = query_data(conn, diary_query)
     follower = query_data(conn, follower_query)
@@ -159,7 +161,7 @@ def follow():
         following_id = post_data.get("following_id")
         user_id = post_data.get("user_id")
         follow_or_disfollow = post_data.get("follow_or_disfollow")
-        if follow_or_disfollow == True:
+        if follow_or_disfollow:
             follow_query = """
                 INSERT INTO following_relation (follower, following)
                 VALUES 
@@ -226,7 +228,7 @@ def follower():
         follower_id = post_data.get("follower_id")
         user_id = post_data.get("user_id")
         follow_or_disfollow = post_data.get("follow_or_disfollow")
-        if follow_or_disfollow == True:
+        if follow_or_disfollow:
             follow_query = """
                 INSERT INTO following_relation (follower, following)
                 VALUES 
@@ -445,16 +447,35 @@ def get_list_info():
         conn = engine.connect()
         get_data = request.get_json()
         id = get_data.get("list_id")
-        diary_query = """
-            SELECT
-                id, list_name
-            FROM
-                lists
-            WHERE
-                id = {};
+        list_query = """
+            SELECT l.list_name, u.user_name, COUNT(i.restaurant_id) AS num_res
+            FROM lists l
+            JOIN users u
+            ON l.user_id = u.id
+            JOIN list_info i
+            ON i.list_id = l.id
+            WHERE l.id = {}
+            GROUP BY l.id;
         """.format(id)
-        diary = query_data(conn, diary_query)
-        response_object["diary"] = diary
+        list_res_query = """
+            SELECT r.restaurant_name, r.address, r.phone, AVG(f.total_rating) AS total_rating, COUNT(f.user_id) AS rating_num 
+            FROM restaurant r
+            JOIN (
+                SELECT total_rating, user_id, restaurant_id
+                FROM feedback_rating
+            ) f
+            ON r.id = f.restaurant_id
+            WHERE r.restaurant_id IN (
+                SELECT restaurant_id
+                FROM lists_info
+                WHERE list_id = {}
+            )
+            GROUP BY r.id; 
+        """.format(id)
+        list_info = query_data(conn, list_query)
+        list_res = query_data(conn, list_res_query)
+        response_object["list_info"] = list_info
+        response_object["list_res"] = list_res
         conn.close()
         
     except Exception as e:
@@ -675,26 +696,42 @@ def search():
     search_content = request.get_json().get("search_content")
     place_list = request.get_json().get("place_list")
     type_list = request.get_json().get("type_list")
+    
+    place_sql = f"('{place_list[0]} | 台北市'"
+    for i in range(1, len(place_list)):
+        place_sql += f" OR r.adress = '{place_list[1]} | 台北市'"
+    place_sql += ")"
+    
+    type_sql = f"('{type_list[0]}'"
+    for i in range(1, len(type_list)):
+        type_sql += f" OR t.restaurant_type = '{type_list[1]}'"
+    type_sql += ")"
+   
     S_DATA = []
 
     try:
         searchResult = f"""
             SELECT r.restaurant_name, r.address, r.phone, AVG(f.total_rating) AS total_rating, COUNT(f.user_id) AS rating_num 
             FROM restaurant r
-            JOIN (
+            LEFT JOIN (
                 SELECT total_rating, user_id, restaurant_id
                 FROM feedback_rating
             ) f
             ON r.id = f.restaurant_id
-            
-
-        ;"""
+            LEFT JOIN restaurant_type t
+            ON r.id = t.restaurant_id
+            WHERE r.address = {place_sql}
+            AND t.restaurant_type = {type_sql}
+            GROUP BY r.id, r.restaurant_name, r.address, r.phone;         
+        """
 
         result = conn.execute(text(searchResult))
         cols = list(result.keys())
         data = [dict(zip(cols, row)) for row in result.fetchall()]
-
-        for restaurant_info in data:
+        res_name = []
+        for i in data:
+            res_name.append(i["restaurant_name"])
+        for restaurant_info in res_name:
             if lcs(restaurant_info) > 0:
                 S_DATA.append(restaurant_info)
 
@@ -712,7 +749,7 @@ def search():
 
 def lcs(data):
     str1 = search_content
-    str2 = data['restaurant_name']
+    str2 = data
     str1_len = len(str1)
     str2_len = len(str2)
 

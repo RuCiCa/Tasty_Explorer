@@ -657,15 +657,12 @@ def add_list():
         user_id = post_data.get("user_id")
         list_id = post_data.get("list_id")
         is_visited = post_data.get("is_visited")
-        is_favorite = post_data.get("is_favorite")
-        is_wanted = post_data.get("is_wanted")
-
 
         insert_query = """
-            INSERT INTO list (restaurant_id, user_id, list_id, is_visited, is_favorite, is_wanted)
+            INSERT INTO list_info (restaurant_id, user_id, list_id, is_visited)
             VALUES 
-            ({}, {}, {}, {}, {}, {}, "{}", {}, "{}");
-        """.format(res_id, user_id, list_id, is_visited, is_favorite, is_wanted)
+            ({}, {}, {});
+        """.format(res_id, user_id, list_id, is_visited)
 
         conn.execute(text(insert_query))
         conn.execute(text("COMMIT;"))

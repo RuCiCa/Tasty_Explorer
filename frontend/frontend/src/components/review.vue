@@ -36,11 +36,13 @@
             </div>
           </div>
           <div class="reviews">
-            <div class="review" v-for="review in reviews" :key="review.id">
+            <div class="review" v-for="(review, index) in reviews" :key="review.id">
               <div class="rest_name">{{ review.rest_name }}</div>
               <div class="location">{{ review.location_dis }} | {{ review.location_city }}</div>
               <div class="like_icon"></div>
-              <div class="tag_icon"></div>
+              <img class="tag_icon" v-if="review.tag_pressed" src="../assets/bookmark_pressed.png"
+                @click="add_to_list(index)" />
+              <img class="tag_icon" v-else src="../assets/bookmark.png" @click="add_to_list(index)" />
               <div class="info_icon"></div>
               <div class="rating">{{ review.rating }}</div>
               <div class="time">{{ review.time }}</div>
@@ -69,10 +71,11 @@ export default {
   data() {
     return {
       reviews: [
-        { id: 1, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
-        { id: 2, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
-        { id: 3, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
-      ]
+        { id: 1, rest_name: "鼎泰豐信義店", tag_pressed: false, location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
+        { id: 2, rest_name: "鼎泰豐信義店", tag_pressed: false, location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
+        { id: 3, rest_name: "鼎泰豐信義店", tag_pressed: false, location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
+      ],
+      // tag_pressed: false,
       //   isVisible: true,
     };
   },
@@ -83,6 +86,9 @@ export default {
 
   },
   methods: {
+    add_to_list(index) {
+      this.reviews[index].tag_pressed = !this.reviews[index].tag_pressed;
+    },
 
   },
   created() {
@@ -128,6 +134,14 @@ body {
   border-radius: 25px;
   cursor: pointer;
   background-color: #fff;
+}
+
+.tag_icon {
+  position: absolute;
+  top: 11px;
+  left: 290px;
+  width: 16px;
+  height: 16px;
 }
 
 .screen .pages {

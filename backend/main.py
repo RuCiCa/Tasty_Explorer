@@ -127,13 +127,30 @@ def get_personal_info(conn, id):
 def greetings():
     return("Hello, world!")
 
-@app.route("/follow", methods=["GET"])
+@app.route("/follow", methods=["POST"])
 def get_follow():
     response_object = {"status": "success"}
     try:
         conn = engine.connect()
-        get_data = request.get_json()
-        user_id = get_data.get("user_id")
+        post_data = request.get_json()
+        user_id = post_data.get("user_id")
+        follow_or_disfollow = post_data.get("follow_or_disfollow")
+        if follow_or_disfollow is not None:
+            following_id = post_data.get("following_id")
+            if follow_or_disfollow:
+                follow_query = """
+                    INSERT INTO following_relation (follower, following)
+                    VALUES 
+                    ({}, {});
+                """.format(following_id, user_id)
+            else:
+                follow_query = """
+                    DELETE FROM following_relation
+                    WHERE follower = {} AND following = {};
+                """.format(following_id, user_id)
+
+            conn.execute(text(follow_query))
+            conn.execute(text("COMMIT;"))
         info, diary, follower, following, comment, list, info_count, diary_count, follower_count, following_count, comment_count, list_count = get_personal_info(conn, user_id)
 
         response_object["info"] = info
@@ -150,49 +167,6 @@ def get_follow():
         response_object["message"] = str(e)
 
     
-    return jsonify(response_object)
-
-@app.route("/follow", methods=["POST"])
-def follow():
-    response_object = {"status": "success"}
-    try:
-        conn = engine.connect()
-        post_data = request.get_json()
-        following_id = post_data.get("following_id")
-        user_id = post_data.get("user_id")
-        follow_or_disfollow = post_data.get("follow_or_disfollow")
-        if follow_or_disfollow:
-            follow_query = """
-                INSERT INTO following_relation (follower_id, following_id)
-                VALUES 
-                ({}, {});
-            """.format(following_id, user_id)
-        else:
-            follow_query = """
-                DELETE FROM following_relation
-                WHERE follower_id = {} AND following_id = {};
-            """.format(following_id, user_id)
-
-        conn.execute(text(follow_query))
-        conn.execute(text("COMMIT;"))
-
-        info, diary, follower, following, comment, list, info_count, diary_count, follower_count, following_count, comment_count, list_count = get_personal_info(conn, user_id)
-
-        response_object["info"] = info
-        response_object["following"] = following
-        response_object["info_count"] = info_count
-        response_object["diary_count"] = diary_count
-        response_object["follower_count"] = follower_count
-        response_object["following_count"] = following_count
-        response_object["comment_count"] = comment_count
-        response_object["list_count"] = list_count
-
-        conn.close()
-        
-    except Exception as e:
-        response_object["status"] = "failed"
-        response_object["message"] = str(e)
-
     return jsonify(response_object)
 
 @app.route("/follower", methods=["GET"])
@@ -200,48 +174,25 @@ def get_follower():
     response_object = {"status": "success"}
     try:
         conn = engine.connect()
-        get_data = request.get_json()
-        user_id = get_data.get("user_id")
-        info, diary, follower, following, comment, list, info_count, diary_count, follower_count, following_count, comment_count, list_count = get_personal_info(conn, user_id)
-
-        response_object["info"] = info
-        response_object["follower"] = follower
-        response_object["info_count"] = info_count
-        response_object["diary_count"] = diary_count
-        response_object["follower_count"] = follower_count
-        response_object["following_count"] = following_count
-        response_object["comment_count"] = comment_count
-        response_object["list_count"] = list_count
-
-    except Exception as e:
-        response_object["status"] = "failed"
-        response_object["message"] = str(e)
-    
-    return jsonify(response_object)
-
-@app.route("/follower", methods=["POST"])
-def follower():
-    response_object = {"status": "success"}
-    try:
-        conn = engine.connect()
         post_data = request.get_json()
-        follower_id = post_data.get("follower_id")
         user_id = post_data.get("user_id")
         follow_or_disfollow = post_data.get("follow_or_disfollow")
-        if follow_or_disfollow:
-            follow_query = """
-                INSERT INTO following_relation (follower_id, following_id)
-                VALUES 
-                ({}, {});
-            """.format(user_id, follower_id)
-        else:
-            follow_query = """
-                DELETE FROM following_relation
-                WHERE follower_id = {} AND following_id = {};
-            """.format(user_id, follower_id)
+        if follow_or_disfollow is not None:
+            follower_id = post_data.get("follower_id")
+            if follow_or_disfollow:
+                follow_query = """
+                    INSERT INTO following_relation (follower, following)
+                    VALUES 
+                    ({}, {});
+                """.format(user_id, follower_id)
+            else:
+                follow_query = """
+                    DELETE FROM following_relation
+                    WHERE follower = {} AND following = {};
+                """.format(user_id, follower_id)
 
-        conn.execute(text(follow_query))
-        conn.execute(text("COMMIT;"))
+            conn.execute(text(follow_query))
+            conn.execute(text("COMMIT;"))
 
         info, diary, follower, following, comment, list, info_count, diary_count, follower_count, following_count, comment_count, list_count = get_personal_info(conn, user_id)
 
@@ -254,13 +205,13 @@ def follower():
         response_object["comment_count"] = comment_count
         response_object["list_count"] = list_count
 
-        conn.close()
-        
     except Exception as e:
         response_object["status"] = "failed"
         response_object["message"] = str(e)
     
     return jsonify(response_object)
+
+
 
 @app.route("/diary", methods=["GET"])
 def get_all_diary():

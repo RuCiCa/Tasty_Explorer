@@ -7,35 +7,33 @@
           <div class="person_info">
             <div class="pic"></div>
             <div class="name_level">
-              <div class="name">xxx美食家</div>
+              <div class="name">{{ user_name }}</div>
               <div class="level">等級:5</div>
             </div>
             <div class="follower">
-              <div class="num">1</div>
+              <div class="num">{{ follower_count }}</div>
               <div class="text">追蹤者</div>
-
             </div>
             <div class="following">
-              <div class="num">10</div>
+              <div class="num">{{ following_count }}</div>
               <div class="text">追蹤中</div>
 
             </div>
           </div>
           <div class="top_nav">
             <div class="feedback_nav">
-              <div class="num">450</div>
+              <div class="num">{{ comment_count }}</div>
               <div class="text">則評分評論</div>
 
             </div>
             <div class="diary_nav">
-              <div class="num">83</div>
+              <div class="num">{{ diary_count }}</div>
               <div class="text">篇日記</div>
               <hr />
             </div>
             <div class="list_nav">
-              <div class="num">10</div>
+              <div class="num">{{ list_count }}</div>
               <div class="text">份清單</div>
-
             </div>
           </div>
           <div class="search_bar"><img class="search_icon" src="" alt="" /></div>
@@ -62,10 +60,18 @@
 
 
 <script>
+import axios from 'axios';
 export default {
   name: 'TastyExplorer_test',
   data() {
     return {
+      user_name: "XXX美食家",
+      user_id: 1,
+      following_count: 0,
+      follower_count: 0,
+      comment_count: 0,    // comment = review
+      diary_count: 0,
+      list_count: 0,
       diarys: [
         { id: 1, time: "2023.04.15", rest_name: "鼎泰豐信義店", diary_text: "當天天氣晴朗，我決定去鼎泰豐享受美食。一進門就被熱鬧的氣氛和美味的香氣所吸引。我點了一份小籠包和一份酸辣湯，兩者都是鼎泰豐的經典菜品... 更多" },
         { id: 2, time: "2023.04.13", rest_name: "鼎泰豐信義店", diary_text: "當天天氣晴朗，我決定去鼎泰豐享受美食。一進門就被熱鬧的氣氛和美味的香氣所吸引。我點了一份小籠包和一份酸辣湯，兩者都是鼎泰豐的經典菜品... 更多" },
@@ -83,6 +89,29 @@ export default {
 
   },
   created() {
+    const path = "http://localhost:5000/diary";
+    const user_id = this.user_id;
+
+    axios
+      .post(path, user_id)
+      .then((res) => {
+        // console.log(res.data.status);
+        this.comment_count = res.data.comment_count;
+        this.diary_count = res.data.diary_count;
+        this.list_count = res.data.list_count;
+        this.follower_count = res.data.follower_count;
+        this.following_count = res.data.following_count;
+        for (var i = 0; i < res.data.diary.length; i++) {
+          this.diarys.push({ id: res.data.diary[i].diary_id, time: res.data.diary[i].date_visted, rest_name: res.data.diary[i].restaurant_name, diary_text: res.data.diary[i].diary_content });
+        }
+
+
+
+
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
   },
 };

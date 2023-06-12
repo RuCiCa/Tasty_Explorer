@@ -6,33 +6,32 @@
           <div class="person_info">
             <div class="pic"></div>
             <div class="name_level">
-              <div class="name">xxx美食家</div>
+              <div class="name">{{ user_name }}</div>
               <div class="level">等級:5</div>
             </div>
             <div class="follower">
-              <div class="num">1</div>
+              <div class="num">{{ follower_count }}</div>
               <div class="text">追蹤者</div>
-
             </div>
             <div class="following">
-              <div class="num">10</div>
+              <div class="num">{{ following_count }}</div>
               <div class="text">追蹤中</div>
 
             </div>
           </div>
           <div class="top_nav">
             <div class="feedback_nav">
-              <div class="num">450</div>
+              <div class="num">{{ comment_count }}</div>
               <div class="text">則評分評論</div>
 
             </div>
             <div class="diary_nav">
-              <div class="num">83</div>
+              <div class="num">{{ diary_count }}</div>
               <div class="text">篇日記</div>
 
             </div>
             <div class="list_nav">
-              <div class="num">10</div>
+              <div class="num">{{ list_count }}</div>
               <div class="text">份清單</div>
               <hr />
             </div>
@@ -68,6 +67,12 @@ export default {
   name: 'TastyExplorer_test',
   data() {
     return {
+      user_name: "XXX美食家",
+      following_count: 0,
+      follower_count: 0,
+      comment_count: 0,    // comment = review
+      diary_count: 0,
+      list_count: 0,
       lists: [
         { id: 1, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
         { id: 2, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },

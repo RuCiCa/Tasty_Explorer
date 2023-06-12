@@ -213,13 +213,14 @@ def get_follower():
 
 
 
-@app.route("/diary", methods=["GET"])
+@app.route("/diary", methods=["POST"])
 def get_all_diary():
     response_object = {"status": "success"}
+    conn = engine.connect()
+    get_data = request.get_json()
+    print(get_data)
+    user_id = get_data.get("user_id")
     try:
-        conn = engine.connect()
-        get_data = request.get_json()
-        user_id = get_data.get("user_id")
         info, diary, follower, following, comment, list, info_count, diary_count, follower_count, following_count, comment_count, list_count = get_personal_info(conn, user_id)
         conn.close()
 

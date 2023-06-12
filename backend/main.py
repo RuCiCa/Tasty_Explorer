@@ -133,10 +133,10 @@ def get_follow():
     try:
         conn = engine.connect()
         post_data = request.get_json()
-        following_id = post_data.get("following_id")
         user_id = post_data.get("user_id")
         follow_or_disfollow = post_data.get("follow_or_disfollow")
         if follow_or_disfollow is not None:
+            following_id = post_data.get("following_id")
             if follow_or_disfollow:
                 follow_query = """
                     INSERT INTO following_relation (follower, following)
@@ -175,10 +175,10 @@ def get_follower():
     try:
         conn = engine.connect()
         post_data = request.get_json()
-        follower_id = post_data.get("follower_id")
         user_id = post_data.get("user_id")
         follow_or_disfollow = post_data.get("follow_or_disfollow")
         if follow_or_disfollow is not None:
+            follower_id = post_data.get("follower_id")
             if follow_or_disfollow:
                 follow_query = """
                     INSERT INTO following_relation (follower, following)

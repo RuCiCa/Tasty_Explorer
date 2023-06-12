@@ -581,27 +581,31 @@ def get_comment():
                 AVG(cp_rating) AS avg_cp,
                 AVG(total_rating) AS avg_total
             FROM feedback_rating
-            WHERE restaurant_id = {};
+            WHERE restaurant_id = {}
+            GROUP BY restaurant_id;
         """.format(id)
         rating = query_data(conn, rating_query)
         response_object["rating"] = rating
 
         comment_query = """
-            SELECT user_id, total_rating, feedback, photo, date_visited
-                FROM feedback_rating
-                WHERE restaurant_id = {};
+            SELECT u.user_name, f.total_rating, f.feedback, f.photo, f.post_date
+            FROM feedback_rating f
+            JOIN users u
+            ON f.user_id = u.id
+            WHERE restaurant_id = {};
         """.format(id)
         comment = query_data(conn, comment_query)
         response_object["comment"] = comment
 
         diary_query = """
             SELECT users.user_name, users.profile_photo
-                FROM diary
-                JOIN users ON diary.user_id = users.id
-                WHERE restaurant_id = {};
+            FROM diary
+            JOIN users 
+            ON diary.user_id = users.id
+            WHERE restaurant_id = {};
         """.format(id)
         diary = query_data(conn, diary_query)
-        response_object["comment"] = diary
+        response_object["diary_list"] = diary
 
         conn.close()
         

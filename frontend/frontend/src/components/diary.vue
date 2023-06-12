@@ -10,28 +10,28 @@
               <div class="name">{{ user_name }}</div>
               <div class="level">等級:5</div>
             </div>
-            <div class="follower">
+            <div class="follower" @click="go_to_follower">
               <div class="num">{{ follower_count }}</div>
               <div class="text">追蹤者</div>
             </div>
-            <div class="following">
+            <div class="following" @click="go_to_following">
               <div class="num">{{ following_count }}</div>
               <div class="text">追蹤中</div>
 
             </div>
           </div>
           <div class="top_nav">
-            <div class="feedback_nav">
+            <div class="feedback_nav" @click="go_to_review">
               <div class="num">{{ comment_count }}</div>
               <div class="text">則評分評論</div>
 
             </div>
-            <div class="diary_nav">
+            <div class="diary_nav" @click="go_to_diary">
               <div class="num">{{ diary_count }}</div>
               <div class="text">篇日記</div>
               <hr />
             </div>
-            <div class="list_nav">
+            <div class="list_nav" @click="go_to_lists">
               <div class="num">{{ list_count }}</div>
               <div class="text">份清單</div>
             </div>
@@ -86,11 +86,27 @@ export default {
 
   },
   methods: {
+    go_to_follower() {
+      this.$router.push('/follower');
+    },
+    go_to_lists() {
+      this.$router.push('/lists');
+    },
+    go_to_following() {
+      this.$router.push('/following');
+    },
+    go_to_diary() {
+      this.$router.push('/diary');
+    },
+    go_to_review() {
+      this.$router.push('/review');
+    },
 
   },
   created() {
     const path = "http://localhost:5000/diary";
     const user_id = this.user_id;
+    console.log(user_id);
 
     axios
       .post(path, user_id)
@@ -105,6 +121,29 @@ export default {
           this.diarys.push({ id: res.data.diary[i].diary_id, time: res.data.diary[i].date_visted, rest_name: res.data.diary[i].restaurant_name, diary_text: res.data.diary[i].diary_content });
         }
 
+
+
+
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    axios
+      .post(path, user_survey)
+      .then((res) => {
+
+        console.log("有成功post", res);
+        if (res.data.status == 'success') {
+          this.user_email = res.data.user_email;
+          console.log("email ", res.data.user_email);
+          // console.log(user_survey);
+          this.$router.push({ name: 'Personal_homepage', params: { user_email: this.user_email } });
+        } else {
+          console.log(res.data.user_email);
+          console.log("survey: ", this.user_survey);
+
+        }
 
 
 

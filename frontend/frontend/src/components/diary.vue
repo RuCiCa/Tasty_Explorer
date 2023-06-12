@@ -87,7 +87,7 @@ export default {
       // post 過去的東西要包大括號 {}
       .post(path, {user_id})
       .then((res) => {
-        console.log(res);
+        // console.log(test_time);
         this.comment_count = res.data.comment_count;
         this.diary_count = res.data.diary_count;
         this.list_count = res.data.list_count;
@@ -95,9 +95,9 @@ export default {
         this.following_count = res.data.following_count;
         this.user_name = res.data.info[0].user_name;
         for (var i = 0; i < res.data.diary.length; i++) {
-          this.diarys.push({ id: res.data.diary[i].diary_id, time: res.data.diary[i].date_visted, rest_name: res.data.diary[i].restaurant_name, diary_text: res.data.diary[i].diary_content });
+          this.diarys.push({ id: res.data.diary[i].diary_id, time: res.data.diary[i].date_visited, rest_name: res.data.diary[i].restaurant_name, diary_text: res.data.diary[i].diary_content });
         }
-
+        // console.log(res.data.diary);
 
 
 

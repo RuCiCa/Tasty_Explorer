@@ -223,7 +223,8 @@ def get_all_diary():
     try:
         info, diary, follower, following, comment, list, info_count, diary_count, follower_count, following_count, comment_count, list_count = get_personal_info(conn, user_id)
         conn.close()
-
+        for i in diary:
+            i["date_visited"] = str(i["date_visited"])[0:10]
         response_object["info"] = info
         response_object["diary"] = diary
         response_object["info_count"] = info_count
@@ -236,7 +237,7 @@ def get_all_diary():
     except Exception as e:
         response_object["status"] = "failed"
         response_object["message"] = str(e)
-    
+    print(datetime.datetime(2023, 6, 12, 15, 39, 26))
     return jsonify(response_object)
 
 @app.route("/diary_info", methods=["GET"])

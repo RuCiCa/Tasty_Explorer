@@ -12,6 +12,7 @@
             <div class="follower">
               <div class="num">1</div>
               <div class="text">追蹤者</div>
+
             </div>
             <div class="following">
               <div class="num">10</div>
@@ -23,7 +24,7 @@
             <div class="feedback_nav">
               <div class="num">450</div>
               <div class="text">則評分評論</div>
-              <hr />
+
             </div>
             <div class="diary_nav">
               <div class="num">83</div>
@@ -33,21 +34,20 @@
             <div class="list_nav">
               <div class="num">10</div>
               <div class="text">份清單</div>
+              <hr />
             </div>
           </div>
-          <div class="reviews">
-            <div class="review" v-for="review in reviews" :key="review.id">
-              <div class="rest_name">{{ review.rest_name }}</div>
-              <div class="location">{{ review.location_dis }} | {{ review.location_city }}</div>
-              <div class="like_icon"></div>
+          <div class="order_title">排序</div>
+          <div class="by_created_date">依創建日期</div>
+          <div class="by_edited_date">依修改日期</div>
+          <div class="by_rest_num">依餐廳數量</div>
+          <div class="lists">
+            <div class="list" v-for="list in lists" :key="list.id">
+              <div class="list_name">{{ list.list_name }}</div>
+              <div class="info">{{ list.info_isPublic }} | {{ list.info_rest_num }} 家餐廳</div>
               <div class="tag_icon"></div>
               <div class="info_icon"></div>
-              <div class="rating">{{ review.rating }}</div>
-              <div class="time">{{ review.time }}</div>
-              <div class="review_text">{{ review.review_text }}</div><img class="rest_pic"
-                src="https://img.ltn.com.tw/Upload/news/600/2021/04/12/phpG9MbVf.jpg" />
             </div>
-
           </div>
         </div>
         <div class="nav">
@@ -68,10 +68,16 @@ export default {
   name: 'TastyExplorer_test',
   data() {
     return {
-      reviews: [
-        { id: 1, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
-        { id: 2, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
-        { id: 3, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
+      lists: [
+        { id: 1, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
+        { id: 2, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
+        { id: 3, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
+        { id: 4, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
+        { id: 5, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
+        { id: 6, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
+        { id: 7, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
+        { id: 8, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
+        { id: 9, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
       ]
       //   isVisible: true,
     };
@@ -90,7 +96,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 * {
@@ -357,48 +362,124 @@ hr {
   border-top: 1pt solid black;
 }
 
-.reviews::-webkit-scrollbar {
+.order_title {
+  position: absolute;
+  width: 32px;
+  height: 19px;
+  left: 34px;
+  top: 195px;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  color: #000000;
+}
+
+.by_created_date {
+  position: absolute;
+  width: 69px;
+  height: 11px;
+  left: 79px;
+  top: 193px;
+  font-family: "Noto Sans TC";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 180%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 1.25px;
+  color: #000000;
+  border: 1px solid #DDDDDD;
+  border-radius: 10px;
+  padding: 5.5px 11px;
+}
+
+.by_edited_date {
+  position: absolute;
+  width: 69px;
+  height: 11px;
+  left: 176px;
+  top: 193px;
+  font-family: "Noto Sans TC";
+  font-style: normal;
+  font-size: 12px;
+  line-height: 180%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 1.25px;
+  font-weight: 600;
+  color: #BD0A0A;
+  border: 1px solid #DDDDDD;
+  border-radius: 10px;
+  padding: 5.5px 11px;
+  background: #FCE8E8;
+}
+
+.by_rest_num {
+  position: absolute;
+  width: 69px;
+  height: 11px;
+  left: 272px;
+  top: 193px;
+  font-family: "Noto Sans TC";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 180%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 1.25px;
+  color: #000000;
+  border: 1px solid #DDDDDD;
+  border-radius: 10px;
+  padding: 5.5px 11px;
+}
+
+.lists::-webkit-scrollbar {
   width: 0;
 }
 
-.reviews {
-  top: 185px;
-  height: 601px;
+.lists {
+  top: 220px;
+  height: 566px;
   position: absolute;
   margin-top: 10px;
   width: 337px;
   left: 28px;
-  top: 185px;
   overflow: hidden;
   overflow-y: auto;
 }
 
-.reviews .review {
+.lists .list {
   width: 337px;
-  height: 301px;
+  height: 57px;
   background: #F3E4E4;
   border-radius: 5px;
   margin: 0 0 20px 0;
 }
 
-.reviews .review .rest_name {
+.lists .list .list_name {
   position: absolute;
-  width: 84px;
   height: 17px;
   left: 17px;
   top: 11px;
   font-family: "Inter";
   font-style: normal;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 17px;
   text-align: center;
   color: #000000;
 }
 
-.reviews .review .location {
+.lists .list .info {
   position: absolute;
-  width: 83px;
   height: 15px;
   left: 17px;
   top: 33px;
@@ -408,49 +489,5 @@ hr {
   font-size: 12px;
   line-height: 15px;
   color: #888888;
-}
-
-.reviews .review .rating {
-  position: absolute;
-  height: 12px;
-  left: 17px;
-  top: 52px;
-}
-
-.reviews .review .time {
-  position: absolute;
-  width: 55px;
-  height: 15px;
-  left: 121px;
-  top: 58px;
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 15px;
-  color: #888888;
-}
-
-.reviews .review .review_text {
-  position: absolute;
-  width: 303px;
-  height: 30px;
-  left: 17px;
-  top: 84px;
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 15px;
-  color: #000000;
-}
-
-.reviews .review .rest_pic {
-  position: absolute;
-  width: 253px;
-  height: 166px;
-  left: 42px;
-  top: 121px;
-  border-radius: 5px;
 }
 </style>

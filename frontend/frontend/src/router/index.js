@@ -8,12 +8,14 @@ import Login_2 from "../components/Login_2.vue";
 import Register_2 from "../components/Register_2.vue";
 import Homepage_2 from "../components/Homepage_2.vue";
 import following from "../components/following.vue";
+import follower from "../components/follower.vue";
 import list from "../components/list.vue";
 import lists from "../components/lists.vue";
 import search from "../components/search.vue";
 import diary from "../components/diary.vue";
 import review from "../components/review.vue";
 import diary_one from "../components/diary_one.vue";
+import restaurant_info from "../components/restaurant_info.vue";
 
 
 Vue.use(VueRouter);
@@ -62,6 +64,11 @@ const routes = [
     component: following,
   },
   {
+    path: "/follower",
+    name: "follower",
+    component: follower,
+  },
+  {
     path: "/list",
     name: "list",
     component: list,
@@ -90,6 +97,11 @@ const routes = [
     path: "/diary_one",
     name: "diary_one",
     component: diary_one,
+  },
+  {
+    path: "/restaurant_info",
+    name: "restaurant_info",
+    component: restaurant_info,
   },
 ];
 

@@ -80,31 +80,7 @@ export default {
     };
   },
   mounted() {
-    const path = "http://localhost:5000/diary";
-    const user_id = this.user_id;
 
-    axios
-      // post 過去的東西要包大括號 {}
-      .post(path, {user_id})
-      .then((res) => {
-        // console.log(test_time);
-        this.comment_count = res.data.comment_count;
-        this.diary_count = res.data.diary_count;
-        this.list_count = res.data.list_count;
-        this.follower_count = res.data.follower_count;
-        this.following_count = res.data.following_count;
-        this.user_name = res.data.info[0].user_name;
-        for (var i = 0; i < res.data.diary.length; i++) {
-          this.diarys.push({ id: res.data.diary[i].diary_id, time: res.data.diary[i].date_visited, rest_name: res.data.diary[i].restaurant_name, diary_text: res.data.diary[i].diary_content });
-        }
-        // console.log(res.data.diary);
-
-
-
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   },
   beforeUnmount() {
 
@@ -128,9 +104,6 @@ export default {
 
   },
   created() {
-<<<<<<< HEAD
-    
-=======
     const path = "http://localhost:5000/diary";
     const user_id = this.user_id;
     console.log(user_id);
@@ -145,9 +118,9 @@ export default {
         this.follower_count = res.data.follower_count;
         this.following_count = res.data.following_count;
         for (var i = 0; i < res.data.diary.length; i++) {
-          this.diarys.push({ id: res.data.diary[i].diary_id, time: res.data.diary[i].date_visted, rest_name: res.data.diary[i].restaurant_name, diary_text: res.data.diary[i].diary_content });
+          this.diarys.push({ id: res.data.diary[i].diary_id, time: res.data.diary[i].date_visited, rest_name: res.data.diary[i].restaurant_name, diary_text: res.data.diary[i].diary_content });
         }
-
+        // console.log(res.data.diary);
 
 
 
@@ -155,30 +128,7 @@ export default {
       .catch((error) => {
         console.log(error);
       });
->>>>>>> c640906 (merge)
 
-    axios
-      .post(path, user_survey)
-      .then((res) => {
-
-        console.log("有成功post", res);
-        if (res.data.status == 'success') {
-          this.user_email = res.data.user_email;
-          console.log("email ", res.data.user_email);
-          // console.log(user_survey);
-          this.$router.push({ name: 'Personal_homepage', params: { user_email: this.user_email } });
-        } else {
-          console.log(res.data.user_email);
-          console.log("survey: ", this.user_survey);
-
-        }
-
-
-
-      })
-      .catch((error) => {
-        console.log(error);
-      });
 
   },
 };
@@ -405,6 +355,7 @@ body {
 
 .screen .pages .diarys {
   top: 222px;
+  height: 554px;
 }
 
 .screen .pages .diarys .diary {

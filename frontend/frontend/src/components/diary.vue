@@ -38,7 +38,7 @@
           </div>
           <div class="search_bar"><img class="search_icon" src="" alt="" /></div>
           <div class="diarys">
-            <div class="diary" v-for="diary in diarys" :key="diary.id">
+            <div class="diary" v-for="diary in diarys" :key="diary.id" @click="to_diary_one(diary.id)">
               <div class="time">{{ diary.time }} 於</div>
               <div class="rest_name">{{ diary.rest_name }}</div>
               <img class="rest_pic" src="https://img.ltn.com.tw/Upload/news/600/2021/04/12/phpG9MbVf.jpg" />
@@ -87,7 +87,7 @@ export default {
       // post 過去的東西要包大括號 {}
       .post(path, {user_id})
       .then((res) => {
-        // console.log(test_time);
+        console.log(res);
         this.comment_count = res.data.comment_count;
         this.diary_count = res.data.diary_count;
         this.list_count = res.data.list_count;
@@ -97,9 +97,7 @@ export default {
         for (var i = 0; i < res.data.diary.length; i++) {
           this.diarys.push({ id: res.data.diary[i].diary_id, time: res.data.diary[i].date_visited, rest_name: res.data.diary[i].restaurant_name, diary_text: res.data.diary[i].diary_content });
         }
-        // console.log(res.data.diary);
-
-
+        // console.log(res.data.diary)
 
       })
       .catch((error) => {
@@ -110,7 +108,20 @@ export default {
 
   },
   methods: {
-
+    to_diary_one(id){
+      const path = "http://localhost:5000/diary_info";
+      const user = { user_id:this.user_id };
+      const diary = { diary_id: id };
+      axios
+          .post(path, user, diary)
+          .then((res) => {
+              this.$router.push({ name: 'diary_one', params: { user_id: this.userId } });
+              } 
+            )
+          .catch((error) => {
+              console.log(error);
+          });
+      }
   },
   created() {
     

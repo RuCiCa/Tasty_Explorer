@@ -10,28 +10,28 @@
               <div class="name">{{ user_name }}</div>
               <div class="level">等級:5</div>
             </div>
-            <div class="follower">
+            <div class="follower" @click="go_to_follower">
               <div class="num">{{ follower_count }}</div>
               <div class="text">追蹤者</div>
             </div>
-            <div class="following">
+            <div class="following" @click="go_to_following">
               <div class="num">{{ following_count }}</div>
               <div class="text">追蹤中</div>
 
             </div>
           </div>
           <div class="top_nav">
-            <div class="feedback_nav">
+            <div class="feedback_nav" @click="go_to_review">
               <div class="num">{{ comment_count }}</div>
               <div class="text">則評分評論</div>
 
             </div>
-            <div class="diary_nav">
+            <div class="diary_nav" @click="go_to_diary">
               <div class="num">{{ diary_count }}</div>
               <div class="text">篇日記</div>
               <hr />
             </div>
-            <div class="list_nav">
+            <div class="list_nav" @click="go_to_lists">
               <div class="num">{{ list_count }}</div>
               <div class="text">份清單</div>
             </div>
@@ -80,12 +80,36 @@ export default {
     };
   },
   mounted() {
+
+  },
+  beforeUnmount() {
+
+  },
+  methods: {
+    go_to_follower() {
+      this.$router.push('/follower');
+    },
+    go_to_lists() {
+      this.$router.push('/lists');
+    },
+    go_to_following() {
+      this.$router.push('/following');
+    },
+    go_to_diary() {
+      this.$router.push('/diary');
+    },
+    go_to_review() {
+      this.$router.push('/review');
+    },
+
+  },
+  created() {
     const path = "http://localhost:5000/diary";
     const user_id = this.user_id;
+    console.log(user_id);
 
     axios
-      // post 過去的東西要包大括號 {}
-      .post(path, {user_id})
+      .post(path, user_id)
       .then((res) => {
         console.log(res);
         this.comment_count = res.data.comment_count;
@@ -93,7 +117,6 @@ export default {
         this.list_count = res.data.list_count;
         this.follower_count = res.data.follower_count;
         this.following_count = res.data.following_count;
-        this.user_name = res.data.info[0].user_name;
         for (var i = 0; i < res.data.diary.length; i++) {
           this.diarys.push({ id: res.data.diary[i].diary_id, time: res.data.diary[i].date_visited, rest_name: res.data.diary[i].restaurant_name, diary_text: res.data.diary[i].diary_content });
         }
@@ -103,12 +126,10 @@ export default {
       .catch((error) => {
         console.log(error);
       });
-  },
-  beforeUnmount() {
 
   },
   methods: {
-    to_diary_one(id){
+    to_diary_one(id) {
       const path = "http://localhost:5000/diary_info";
       const data = {
         user_id: this.user_id,
@@ -121,10 +142,10 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-      }
+    }
   },
   created() {
-    
+
 
   },
 };
@@ -351,6 +372,7 @@ body {
 
 .screen .pages .diarys {
   top: 222px;
+  height: 554px;
 }
 
 .screen .pages .diarys .diary {

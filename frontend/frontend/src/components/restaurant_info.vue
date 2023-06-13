@@ -5,21 +5,21 @@
       <div class="screen">
         <div class="pages">
           <img class="back_icon" src="../assets/back.png" />
-          <div class="rest_name">魚心日式料理店</div>
+          <div class="rest_name">{{ rest_name }}</div>
           <div class="route_btn">路線</div>
           <div class="reserve_btn">預約</div>
           <div class="phone_btn">電話</div>
           <img class="rest_pic" src="../assets/rest_pic1.jpg" />
           <div class="rest_info">
             <img class="loc_icon" src="../assets/location.png" />
-            <div class="loc">104台北市中山區吉林路47號</div>
+            <div class="loc">{{ address }}</div>
             <img class="open_icon" src="../assets/time.png" />
             <div class="is_open">已打烊 </div>
             <div class="open_time">開始營業時間：週四11:30</div>
             <img class="price_icon" src="../assets/price.png" />
             <div class="price">$400~600</div>
             <img class="website_icon" src="../assets/website.png" />
-            <div class="website">facebook.com</div>
+            <div class="website">{{ website }}</div>
           </div>
         </div>
         <div class="nav">
@@ -37,10 +37,17 @@
 
 
 <script>
+import axios from 'axios';
 export default {
   name: 'TastyExplorer_test',
   data() {
     return {
+      address: "中山區 | 台北市",
+      id: 1,
+      phone: "02-2562-1270",
+      rest_name: "魚心日本料理",
+      website: "https://www.facebook.com/%E9%AD%9A%E5%BF%83%E6%97%A5%E6%9C%AC%E6%96%99%E7%90%86-234781849865585/"
+      
       //   isVisible: true,
     };
   },
@@ -54,7 +61,24 @@ export default {
 
   },
   created() {
+    const path = "http://localhost:5000/following";
+    const restaurant_id = this.restaurant_id;
+    console.log(user_id);
 
+    axios
+      .post(path, {restaurant_id})
+      .then((res) => {
+        console.log(res);
+        this.address = res.data.restaurant[i].address;
+        this.rest_name = res.data.restaurant[i].restaurant_name;
+        this.phone = res.data.restaurant[i].phone;
+        this.website = res.data.restaurant[i].website;
+        // console.log(res.data.diary)
+
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
 </script>

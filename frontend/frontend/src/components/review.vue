@@ -88,7 +88,7 @@ export default {
     };
   },
   mounted() {
-    const path = "http://localhost:5000/review";
+    const path = "http://localhost:5000/user_comment";
     const user_id = this.user_id;
 
     axios

@@ -63,7 +63,7 @@ def get_personal_info(conn, id):
 
     diary_query = """
     SELECT
-        diary.restaurant_id, diary.date_visited, diary.is_public, diary.diary_content,
+        diary.id AS diary_id, diary.restaurant_id, diary.date_visited, diary.is_public, diary.diary_content,
         diary.photo, diary.user_id, users.user_name, restaurants.restaurant_name
     FROM
         diary
@@ -268,7 +268,8 @@ def get_diary():
         diary = query_data(conn, diary_query)
         response_object["diary"] = diary
         conn.close()
-
+        for i in diary:
+            i["date_visited"] = str(i["date_visited"])[0:10]
         response_object["info"] = info
         response_object["diary"] = diary
         response_object["info_count"] = info_count

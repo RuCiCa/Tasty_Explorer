@@ -64,7 +64,7 @@
 <script>
 import axios from 'axios';
 export default {
-  name: 'TastyExplorer_test',
+  name: 'diary_one',
   data() {
     return {
       user_name: "XXX美食家",
@@ -92,7 +92,7 @@ export default {
       // post 過去的東西要包大括號 {}
       .post(path, { "user_id": user_id, "diary_id": diary_id })
       .then((res) => {
-        console.log(res);
+        console.log(diary_id);
         this.comment_count = res.data.comment_count;
         this.diary_count = res.data.diary_count;
         this.list_count = res.data.list_count;

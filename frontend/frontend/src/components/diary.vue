@@ -72,10 +72,7 @@ export default {
       comment_count: 0,    // comment = review
       diary_count: 0,
       list_count: 0,
-      diarys: [
-        { id: 1, time: "2023.04.15", rest_name: "鼎泰豐信義店", diary_text: "當天天氣晴朗，我決定去鼎泰豐享受美食。一進門就被熱鬧的氣氛和美味的香氣所吸引。我點了一份小籠包和一份酸辣湯，兩者都是鼎泰豐的經典菜品... 更多" },
-        { id: 2, time: "2023.04.13", rest_name: "鼎泰豐信義店", diary_text: "當天天氣晴朗，我決定去鼎泰豐享受美食。一進門就被熱鬧的氣氛和美味的香氣所吸引。我點了一份小籠包和一份酸辣湯，兩者都是鼎泰豐的經典菜品... 更多" },
-      ]
+      diarys: []
       //   isVisible: true,
     };
   },
@@ -101,6 +98,10 @@ export default {
     go_to_review() {
       this.$router.push('/review');
     },
+    to_diary_one(id) {
+      // console.log(id);
+      this.$router.push({ name: 'diary_one', params: { user_id: this.user_id, diary_id: id } });
+    }
 
   },
   created() {
@@ -117,6 +118,7 @@ export default {
         this.list_count = res.data.list_count;
         this.follower_count = res.data.follower_count;
         this.following_count = res.data.following_count;
+        this.user_name = res.data.info[0].user_name;
         for (var i = 0; i < res.data.diary.length; i++) {
           this.diarys.push({ id: res.data.diary[i].diary_id, time: res.data.diary[i].date_visited, rest_name: res.data.diary[i].restaurant_name, diary_text: res.data.diary[i].diary_content });
         }
@@ -126,15 +128,6 @@ export default {
       .catch((error) => {
         console.log(error);
       });
-
-  },
-  methods: {
-    to_diary_one(id) {
-      this.$router.push({ name: 'diary_one', params: { user_id: this.user_id, diary_id: id } });
-    }
-  },
-  created() {
-
 
   },
 };

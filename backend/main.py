@@ -10,7 +10,7 @@ today_weekday = datetime.date.today().weekday()
 app = Flask(__name__)
 CORS(app, resources={r"/*":{'origins':"*"}})
 # engine = create_engine("mysql+pymysql://gdsc:NCCUgdsc1234!@34.81.186.58:3306/bricksdata?charset=utf8mb4")
-engine = create_engine("mysql+pymysql://root:Yu0!newcode@localhost:3306/tastyexplorerdb?charset=utf8mb4")
+# engine = create_engine("mysql+pymysql://root:Yu0!newcode@localhost:3306/tastyexplorerdb?charset=utf8mb4")
 
 app.config.from_object(__name__)
 
@@ -240,11 +240,11 @@ def get_all_diary():
     print(datetime.datetime(2023, 6, 12, 15, 39, 26))
     return jsonify(response_object)
 
-@app.route("/diary_info", methods=["GET"])
+@app.route("/diary_info", methods=["POST"])
 def get_diary():
     response_object = {"status": "success"}
     try:
-        conn = engine.connect()
+        # conn = engine.connect()
         get_data = request.get_json()
         user_id = get_data.get("user_id")
         id = get_data.get("diary_id")
@@ -261,21 +261,22 @@ def get_diary():
             WHERE
                 diary.id = {};
         """.format(id)
-        diary = query_data(conn, diary_query)
+        # diary = query_data(conn, diary_query)
         response_object["diary"] = diary
-        conn.close()
+        # conn.close()
 
-        response_object["info"] = info
-        response_object["info_count"] = info_count
-        response_object["diary_count"] = diary_count
-        response_object["follower_count"] = follower_count
-        response_object["following_count"] = following_count
-        response_object["comment_count"] = comment_count
-        response_object["list_count"] = list_count
+        response_object["info"] = 1#info
+        response_object["diary"] = []#diary
+        response_object["info_count"] = 1#info_count
+        response_object["diary_count"] = 2#diary_count
+        response_object["follower_count"] = 7#follower_count
+        response_object["following_count"] = 4#following_count
+        response_object["comment_count"] = 4#comment_count
+        response_object["list_count"] = 5#list_count
         
     except Exception as e:
         response_object["status"] = "failed"
-        response_object["message"] = str(e)
+        response_object["message"] = str(e)diary_info
 
     return jsonify(response_object)
 
@@ -465,6 +466,31 @@ def get_restaurant():
         response_object["status"] = "failed"
         response_object["message"] = str(e)
 
+    return jsonify(response_object)
+
+@app.route("/user_comment", methods=["POST"])
+def get_user_comment():
+    response_object = {"status": "success"}
+    conn = engine.connect()
+    get_data = request.get_json()
+    user_id = get_data.get("user_id")
+    try:
+        info, diary, follower, following, comment, list, info_count, diary_count, follower_count, following_count, comment_count, list_count = get_personal_info(conn, user_id)
+        conn.close()
+        for i in comment:
+            i["post_date"] = str(i["post_date"])[0:10]
+        response_object["info"] = info
+        response_object["user_comment"] = comment
+        response_object["info_count"] = info_count
+        response_object["diary_count"] = diary_count
+        response_object["follower_count"] = follower_count
+        response_object["following_count"] = following_count
+        response_object["comment_count"] = comment_count
+        response_object["list_count"] = list_count
+        
+    except Exception as e:
+        response_object["status"] = "failed"
+        response_object["message"] = str(e)
     return jsonify(response_object)
 
 @app.route("/restaurant_info", methods=["POST"])

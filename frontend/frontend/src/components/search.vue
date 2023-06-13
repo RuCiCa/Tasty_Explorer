@@ -6,15 +6,15 @@
         <div class="pages">
           <div class="overlay" v-if="showOverlay"></div>
           <div class="search_bar"></div>
-          <div class="filter_type" @click="choose_type">類型 🔻</div>
-          <div class="filter_location" @click="choose_location">地區 🔻</div>
+          <div class="filter_type" :style="type" @click="choose_type">類型 🔻</div>
+          <div class="filter_location" :style="location" @click="choose_location">地區 🔻</div>
           <div class="filter_open" :style="open" @click="choose_open">營業中</div>
           <div class="recent_search_title">最近搜尋</div>
           <div class="restaurants">
             <div class="restaurant" v-for="restaurant in restaurants" :key="restaurant.id">
               <img class="rest_pic" src="https://img.ltn.com.tw/Upload/news/600/2021/04/12/phpG9MbVf.jpg" />
               <div class="rest_name">{{ restaurant.rest_name }}</div>
-              <div class="location">{{ restaurant.location_dis }} | {{ restaurant.location_city }}</div>
+              <div class="location">{{ restaurant.location }}</div>
               <div class="add_icon"></div>
               <div class="rating_title">評分</div>
               <div class="rating_number">| {{ restaurant.rating_number }} 人已評分</div>
@@ -72,20 +72,35 @@
 
 
 <script>
+import axios from 'axios';
 export default {
   name: 'TastyExplorer_test',
   data() {
     return {
+      search_content: "",
+      type_list: [],
+      place_list: [],
       restaurants: [
-        { id: 1, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 987, rating: "❤❤❤", contact_number: "02-2562-1270" },
-        { id: 2, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 97, rating: "❤❤❤❤", contact_number: "02-2562-1270" },
-        { id: 3, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 87, rating: "❤❤❤❤❤", contact_number: "02-2562-1270" },
-        { id: 4, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 98, rating: "❤❤❤❤❤", contact_number: "02-2562-1270" },
-        { id: 5, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 187, rating: "❤", contact_number: "02-2562-1270" },
-        { id: 6, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 383, rating: "❤❤❤❤", contact_number: "02-2562-1270" },
+        // { id: 1, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 987, rating: "❤❤❤", contact_number: "02-2562-1270" },
+        // { id: 2, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 97, rating: "❤❤❤❤", contact_number: "02-2562-1270" },
+        // { id: 3, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 87, rating: "❤❤❤❤❤", contact_number: "02-2562-1270" },
+        // { id: 4, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 98, rating: "❤❤❤❤❤", contact_number: "02-2562-1270" },
+        // { id: 5, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 187, rating: "❤", contact_number: "02-2562-1270" },
+        // { id: 6, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 383, rating: "❤❤❤❤", contact_number: "02-2562-1270" },
 
       ],
       showOverlay: false,
+      type: {
+        color: '#000000',
+        background: "#FFFFFF",
+        border: "1px solid #DDDDDD",
+      },
+      location: {
+        color: '#000000',
+        background: "#FFFFFF",
+        border: "1px solid #DDDDDD",
+      },
+
       open: {
         color: '#000000',
         background: "#FFFFFF",
@@ -225,10 +240,148 @@ export default {
     comfirm_type() {
       this.showFilter_type_window = !this.showFilter_type_window;
       this.showOverlay = !this.showOverlay;
+      this.type_list = [];
+      if (this.type1) {
+        this.type_list.push("中式");
+      }
+      if (this.type2) {
+        this.type_list.push("美式");
+      }
+      if (this.type3) {
+        this.type_list.push("日式");
+      }
+      if (this.type4) {
+        this.type_list.push("韓式");
+      }
+      if (this.type5) {
+        this.type_list.push("義式");
+      }
+      if (this.type6) {
+        this.type_list.push("火鍋");
+      }
+      if (this.type7) {
+        this.type_list.push("燒烤");
+      }
+      if (this.type8) {
+        this.type_list.push("正餐");
+      }
+      if (this.type9) {
+        this.type_list.push("點心");
+      }
+      if (this.type10) {
+        this.type_list.push("酒吧");
+      }
+      if (this.type11) {
+        this.type_list.push("飲品");
+      }
+      if (this.type12) {
+        this.type_list.push("其他");
+      }
+
+      if (this.type_list.length > 0) {
+        this.type.color = '#BD0A0A';
+        this.type.background = "#FCE8E8";
+        this.type.border = "1px solid #DDDDDD";
+
+      } else {
+        this.type.color = '#000000';
+        this.type.background = "#FFFFFF";
+        this.type.border = "1px solid #DDDDDD";
+      }
+
+      const path = "http://localhost:5000/search";
+
+
+      axios
+        .post(path, { "search_content": this.search_content, "place_list": this.place_list, "type_list": this.type_list })
+        .then((res) => {
+          console.log(res);
+
+          for (var i = 0; i < res.data.items.length; i++) {
+            this.diarys.push({ id: res.data.items[i].id, rest_name: res.data.items[i].restaurant_name, location: res.data.items[i].address, rating_number: res.data.items[i].rating_num, rating: res.data.items[i].total_rating, contact_number: res.data.items[i].phone });
+          }
+
+
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+
+
+
+
     },
     comfirm_location() {
       this.showFilter_location_window = !this.showFilter_location_window;
       this.showOverlay = !this.showOverlay;
+      this.place_list = [];
+      if (this.location1) {
+        this.place_list.push("中正區");
+      }
+      if (this.location2) {
+        this.place_list.push("大同區");
+      }
+      if (this.location3) {
+        this.place_list.push("中山區");
+      }
+      if (this.location4) {
+        this.place_list.push("松山區");
+      }
+      if (this.location5) {
+        this.place_list.push("大安區");
+      }
+      if (this.location6) {
+        this.place_list.push("萬華區");
+      }
+      if (this.location7) {
+        this.place_list.push("信義區");
+      }
+      if (this.location8) {
+        this.place_list.push("士林區");
+      }
+      if (this.location9) {
+        this.place_list.push("北投區");
+      }
+      if (this.location10) {
+        this.place_list.push("內湖區");
+      }
+      if (this.location11) {
+        this.place_list.push("南港區");
+      }
+      if (this.location12) {
+        this.place_list.push("文山區");
+      }
+
+      if (this.place_list.length > 0) {
+        this.location.color = '#BD0A0A';
+        this.location.background = "#FCE8E8";
+        this.location.border = "1px solid #DDDDDD";
+
+      } else {
+        this.location.color = '#000000';
+        this.location.background = "#FFFFFF";
+        this.location.border = "1px solid #DDDDDD";
+      }
+
+      const path = "http://localhost:5000/search";
+
+
+      axios
+        .post(path, { "search_content": this.search_content, "place_list": this.place_list, "type_list": this.type_list })
+        .then((res) => {
+          console.log(res);
+
+          for (var i = 0; i < res.data.items.length; i++) {
+            this.diarys.push({ id: res.data.items[i].id, rest_name: res.data.items[i].restaurant_name, location: res.data.items[i].address, rating_number: res.data.items[i].rating_num, rating: res.data.items[i].total_rating, contact_number: res.data.items[i].phone });
+          }
+
+
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
     },
 
     changeStyle_t1() {
@@ -365,7 +518,7 @@ export default {
     },
 
     changeStyle_l1() {
-      if (this.locaiton1) {
+      if (this.location1) {
         this.l1.color = '#000000';
         this.location1 = false;
         console.log(this.location1);
@@ -376,7 +529,7 @@ export default {
       }
     },
     changeStyle_l2() {
-      if (this.locaiton2) {
+      if (this.location2) {
         this.l2.color = '#000000';
         this.location2 = false;
         console.log(this.location2);
@@ -387,7 +540,7 @@ export default {
       }
     },
     changeStyle_l3() {
-      if (this.locaiton3) {
+      if (this.location3) {
         this.l3.color = '#000000';
         this.location3 = false;
         console.log(this.location3);
@@ -398,7 +551,7 @@ export default {
       }
     },
     changeStyle_l4() {
-      if (this.locaiton4) {
+      if (this.location4) {
         this.l4.color = '#000000';
         this.location4 = false;
         console.log(this.location4);
@@ -409,7 +562,7 @@ export default {
       }
     },
     changeStyle_l5() {
-      if (this.locaiton5) {
+      if (this.location5) {
         this.l5.color = '#000000';
         this.location5 = false;
         console.log(this.location5);
@@ -420,7 +573,7 @@ export default {
       }
     },
     changeStyle_l6() {
-      if (this.locaiton6) {
+      if (this.location6) {
         this.l6.color = '#000000';
         this.location6 = false;
         console.log(this.location6);
@@ -431,7 +584,7 @@ export default {
       }
     },
     changeStyle_l7() {
-      if (this.locaiton7) {
+      if (this.location7) {
         this.l7.color = '#000000';
         this.location7 = false;
         console.log(this.location7);
@@ -442,7 +595,7 @@ export default {
       }
     },
     changeStyle_l8() {
-      if (this.locaiton8) {
+      if (this.location8) {
         this.l8.color = '#000000';
         this.location8 = false;
         console.log(this.location8);
@@ -453,7 +606,7 @@ export default {
       }
     },
     changeStyle_l9() {
-      if (this.locaiton9) {
+      if (this.location9) {
         this.l9.color = '#000000';
         this.location9 = false;
         console.log(this.location9);
@@ -464,7 +617,7 @@ export default {
       }
     },
     changeStyle_l10() {
-      if (this.locaiton10) {
+      if (this.location10) {
         this.l10.color = '#000000';
         this.location10 = false;
         console.log(this.location10);
@@ -475,7 +628,7 @@ export default {
       }
     },
     changeStyle_l11() {
-      if (this.locaiton11) {
+      if (this.location11) {
         this.l11.color = '#000000';
         this.location11 = false;
         console.log(this.location11);
@@ -486,7 +639,7 @@ export default {
       }
     },
     changeStyle_l12() {
-      if (this.locaiton12) {
+      if (this.location12) {
         this.l12.color = '#000000';
         this.location12 = false;
         console.log(this.location12);

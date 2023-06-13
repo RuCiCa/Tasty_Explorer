@@ -14,6 +14,7 @@ import search from "../components/search.vue";
 import diary from "../components/diary.vue";
 import review from "../components/review.vue";
 import diary_one from "../components/diary_one.vue";
+import restaurant_info from "../components/restaurant_info.vue";
 
 
 Vue.use(VueRouter);
@@ -90,6 +91,11 @@ const routes = [
     path: "/diary_one",
     name: "diary_one",
     component: diary_one,
+  },
+  {
+    path: "/restaurant_info",
+    name: "restaurant_info",
+    component: restaurant_info,
   },
 ];
 

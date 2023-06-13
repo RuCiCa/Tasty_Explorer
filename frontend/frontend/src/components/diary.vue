@@ -109,14 +109,16 @@ export default {
     console.log(user_id);
 
     axios
-      .post(path, user_id)
+      // post 過去的東西要包大括號 {}
+      .post(path, { user_id })
       .then((res) => {
-        // console.log(res.data.status);
+        console.log(res);
         this.comment_count = res.data.comment_count;
         this.diary_count = res.data.diary_count;
         this.list_count = res.data.list_count;
         this.follower_count = res.data.follower_count;
         this.following_count = res.data.following_count;
+        this.user_name = res.data.info[0].user_name;
         for (var i = 0; i < res.data.diary.length; i++) {
           this.diarys.push({ id: res.data.diary[i].diary_id, time: res.data.diary[i].date_visted, rest_name: res.data.diary[i].restaurant_name, diary_text: res.data.diary[i].diary_content });
         }
@@ -128,29 +130,15 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+  },
+  beforeUnmount() {
 
-    axios
-      .post(path, user_survey)
-      .then((res) => {
+  },
+  methods: {
 
-        console.log("有成功post", res);
-        if (res.data.status == 'success') {
-          this.user_email = res.data.user_email;
-          console.log("email ", res.data.user_email);
-          // console.log(user_survey);
-          this.$router.push({ name: 'Personal_homepage', params: { user_email: this.user_email } });
-        } else {
-          console.log(res.data.user_email);
-          console.log("survey: ", this.user_survey);
+  },
+  created() {
 
-        }
-
-
-
-      })
-      .catch((error) => {
-        console.log(error);
-      });
 
   },
 };

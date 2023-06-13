@@ -63,7 +63,7 @@ def get_personal_info(conn, id):
 
     diary_query = """
     SELECT
-        diary.restaurant_id, diary.date_visited, diary.is_public,  
+        diary.restaurant_id, diary.date_visited, diary.is_public, diary.diary_content,
         diary.photo, diary.user_id, users.user_name, restaurants.restaurant_name
     FROM
         diary
@@ -127,13 +127,30 @@ def get_personal_info(conn, id):
 def greetings():
     return("Hello, world!")
 
-@app.route("/follow", methods=["GET"])
+@app.route("/follow", methods=["POST"])
 def get_follow():
     response_object = {"status": "success"}
     try:
         conn = engine.connect()
-        get_data = request.get_json()
-        user_id = get_data.get("user_id")
+        post_data = request.get_json()
+        user_id = post_data.get("user_id")
+        follow_or_disfollow = post_data.get("follow_or_disfollow")
+        if follow_or_disfollow is not None:
+            following_id = post_data.get("following_id")
+            if follow_or_disfollow:
+                follow_query = """
+                    INSERT INTO following_relation (follower, following)
+                    VALUES 
+                    ({}, {});
+                """.format(following_id, user_id)
+            else:
+                follow_query = """
+                    DELETE FROM following_relation
+                    WHERE follower = {} AND following = {};
+                """.format(following_id, user_id)
+
+            conn.execute(text(follow_query))
+            conn.execute(text("COMMIT;"))
         info, diary, follower, following, comment, list, info_count, diary_count, follower_count, following_count, comment_count, list_count = get_personal_info(conn, user_id)
 
         response_object["info"] = info
@@ -150,49 +167,6 @@ def get_follow():
         response_object["message"] = str(e)
 
     
-    return jsonify(response_object)
-
-@app.route("/follow", methods=["POST"])
-def follow():
-    response_object = {"status": "success"}
-    try:
-        conn = engine.connect()
-        post_data = request.get_json()
-        following_id = post_data.get("following_id")
-        user_id = post_data.get("user_id")
-        follow_or_disfollow = post_data.get("follow_or_disfollow")
-        if follow_or_disfollow:
-            follow_query = """
-                INSERT INTO following_relation (follower, following)
-                VALUES 
-                ({}, {});
-            """.format(following_id, user_id)
-        else:
-            follow_query = """
-                DELETE FROM following_relation
-                WHERE follower = {} AND following = {};
-            """.format(following_id, user_id)
-
-        conn.execute(text(follow_query))
-        conn.execute(text("COMMIT;"))
-
-        info, diary, follower, following, comment, list, info_count, diary_count, follower_count, following_count, comment_count, list_count = get_personal_info(conn, user_id)
-
-        response_object["info"] = info
-        response_object["following"] = following
-        response_object["info_count"] = info_count
-        response_object["diary_count"] = diary_count
-        response_object["follower_count"] = follower_count
-        response_object["following_count"] = following_count
-        response_object["comment_count"] = comment_count
-        response_object["list_count"] = list_count
-
-        conn.close()
-        
-    except Exception as e:
-        response_object["status"] = "failed"
-        response_object["message"] = str(e)
-
     return jsonify(response_object)
 
 @app.route("/follower", methods=["GET"])
@@ -200,48 +174,25 @@ def get_follower():
     response_object = {"status": "success"}
     try:
         conn = engine.connect()
-        get_data = request.get_json()
-        user_id = get_data.get("user_id")
-        info, diary, follower, following, comment, list, info_count, diary_count, follower_count, following_count, comment_count, list_count = get_personal_info(conn, user_id)
-
-        response_object["info"] = info
-        response_object["follower"] = follower
-        response_object["info_count"] = info_count
-        response_object["diary_count"] = diary_count
-        response_object["follower_count"] = follower_count
-        response_object["following_count"] = following_count
-        response_object["comment_count"] = comment_count
-        response_object["list_count"] = list_count
-
-    except Exception as e:
-        response_object["status"] = "failed"
-        response_object["message"] = str(e)
-    
-    return jsonify(response_object)
-
-@app.route("/follower", methods=["POST"])
-def follower():
-    response_object = {"status": "success"}
-    try:
-        conn = engine.connect()
         post_data = request.get_json()
-        follower_id = post_data.get("follower_id")
         user_id = post_data.get("user_id")
         follow_or_disfollow = post_data.get("follow_or_disfollow")
-        if follow_or_disfollow:
-            follow_query = """
-                INSERT INTO following_relation (follower, following)
-                VALUES 
-                ({}, {});
-            """.format(user_id, follower_id)
-        else:
-            follow_query = """
-                DELETE FROM following_relation
-                WHERE follower = {} AND following = {};
-            """.format(user_id, follower_id)
+        if follow_or_disfollow is not None:
+            follower_id = post_data.get("follower_id")
+            if follow_or_disfollow:
+                follow_query = """
+                    INSERT INTO following_relation (follower, following)
+                    VALUES 
+                    ({}, {});
+                """.format(user_id, follower_id)
+            else:
+                follow_query = """
+                    DELETE FROM following_relation
+                    WHERE follower = {} AND following = {};
+                """.format(user_id, follower_id)
 
-        conn.execute(text(follow_query))
-        conn.execute(text("COMMIT;"))
+            conn.execute(text(follow_query))
+            conn.execute(text("COMMIT;"))
 
         info, diary, follower, following, comment, list, info_count, diary_count, follower_count, following_count, comment_count, list_count = get_personal_info(conn, user_id)
 
@@ -254,21 +205,22 @@ def follower():
         response_object["comment_count"] = comment_count
         response_object["list_count"] = list_count
 
-        conn.close()
-        
     except Exception as e:
         response_object["status"] = "failed"
         response_object["message"] = str(e)
     
     return jsonify(response_object)
 
-@app.route("/diary", methods=["GET"])
+
+
+@app.route("/diary", methods=["POST"])
 def get_all_diary():
     response_object = {"status": "success"}
+    conn = engine.connect()
+    get_data = request.get_json()
+    print(get_data)
+    user_id = get_data.get("user_id")
     try:
-        conn = engine.connect()
-        get_data = request.get_json()
-        user_id = get_data.get("user_id")
         info, diary, follower, following, comment, list, info_count, diary_count, follower_count, following_count, comment_count, list_count = get_personal_info(conn, user_id)
         conn.close()
 
@@ -294,7 +246,7 @@ def get_diary():
         conn = engine.connect()
         get_data = request.get_json()
         user_id = get_data.get("user_id")
-        id = get_data.get("dairy_id")
+        id = get_data.get("diary_id")
         info, diary, follower, following, comment, list, info_count, diary_count, follower_count, following_count, comment_count, list_count = get_personal_info(conn, user_id)
         
         diary_query = """
@@ -303,10 +255,10 @@ def get_diary():
                 diary.photo, diary.user_id, users.user_name, restaurants.restaurant_name
             FROM
                 diary
-                JOIN users ON diary.user_id = users.user_id
+                JOIN users ON diary.user_id = users.id
                 JOIN restaurants ON diary.restaurant_id = restaurants.id
             WHERE
-                diary.diary_id = {};
+                diary.id = {};
         """.format(id)
         diary = query_data(conn, diary_query)
         response_object["diary"] = diary
@@ -338,7 +290,7 @@ def post_diary():
         photo = post_data.get("photo")
 
         diary_query = """
-            INSERT INTO diary (restaurant_id, user_id, content, photo)
+            INSERT INTO diary (restaurant_id, user_id, diary_content, photo)
             VALUES 
             ({}, {}, "{}", "{}");
         """.format(res_id, user_id, content, photo)
@@ -362,18 +314,18 @@ def get_edit_diary():
     try:
         conn = engine.connect()
         get_data = request.get_json()
-        id = get_data.get("dairy_id")
+        id = get_data.get("diary_id")
         
         diary_query = """
             SELECT
-                diary.restaurant_id, diary.date_visited, 
+                diary.restaurant_id, diary.date_visited, diary.diary_content,
                 diary.photo, diary.user_id, users.user_name, restaurants.restaurant_name
             FROM
                 diary
-                JOIN users ON diary.user_id = users.user_id
+                JOIN users ON diary.user_id = users.id
                 JOIN restaurants ON diary.restaurant_id = restaurants.id
             WHERE
-                diary.diary_id = {};
+                diary.id = {};
         """.format(id)
         diary = query_data(conn, diary_query)
         response_object["diary"] = diary
@@ -416,7 +368,7 @@ def edit_diary():
 
     return jsonify(response_object)
 
-@app.route("/list", methods=["GET"])
+@app.route("/list", methods=["POST"])
 def get_all_list():
     response_object = {"status": "success"}
     try:
@@ -440,7 +392,7 @@ def get_all_list():
     
     return jsonify(response_object)
 
-@app.route("/list_info", methods=["GET"])
+@app.route("/list_info", methods=["POST"])
 def get_list_info():
     response_object = {"status": "success"}
     try:
@@ -452,20 +404,20 @@ def get_list_info():
             FROM lists l
             JOIN users u
             ON l.user_id = u.id
-            JOIN list_info i
+            JOIN lists_info i
             ON i.list_id = l.id
             WHERE l.id = {}
             GROUP BY l.id;
         """.format(id)
         list_res_query = """
             SELECT r.restaurant_name, r.address, r.phone, AVG(f.total_rating) AS total_rating, COUNT(f.user_id) AS rating_num 
-            FROM restaurant r
-            JOIN (
+            FROM restaurants r
+            LEFT JOIN (
                 SELECT total_rating, user_id, restaurant_id
                 FROM feedback_rating
             ) f
             ON r.id = f.restaurant_id
-            WHERE r.restaurant_id IN (
+            WHERE r.id IN (
                 SELECT restaurant_id
                 FROM lists_info
                 WHERE list_id = {}
@@ -493,18 +445,19 @@ def get_restaurant():
         id = post_data.get("restaurant_id")
         res_query = """
             SELECT
-                restaurant_id, name,address, latitude, longitude, is_open, 
-                food_type, phone, email, website, menu_id
+                id, restaurant_name,address, latitude, longitude, 
+                phone, website
             FROM
-                restaurant
+                restaurants
             WHERE
-                restaurant_id = {};
+                id = {};
         """.format(id)
         restaurant = query_data(conn, res_query)
         response_object["restaurant"] = restaurant
 
-        open_status = open_check(id, conn)
-        response_object["open_status"] = open_status
+        # 營業時間
+        # open_status = open_check(id, conn)
+        # response_object["open_status"] = open_status
         conn.close()
         
     except Exception as e:
@@ -522,20 +475,17 @@ def get_restaurant_info():
         id = post_data.get("restaurant_id")
         res_query = """
             SELECT
-                restaurant_id, name,address, is_open, 
-                phone, email, website, menu_id
+                id, restaurant_name, address, phone, website
             FROM
-                restaurant
+                restaurants
             WHERE
-                restaurant_id = {};
+                id = {};
         """.format(id)
-        res_data = conn.execute(res_query)
-        keys = list(res_data.keys())
-        restaurant = [dict(zip(keys, row)) for row in res_data.fetchall()]
+        restaurant = query_data(conn, res_query)
         response_object["restaurant"] = restaurant
-
-        open_status = open_check(id, conn)
-        response_object["open_status"] = open_status
+# 營業時間
+        # open_status = open_check(id, conn)
+        # response_object["open_status"] = open_status
         conn.close()
         
     except Exception as e:
@@ -550,14 +500,14 @@ def get_menu_info():
     try:
         conn = engine.connect()
         post_data = request.get_json()
-        id = post_data.get("menu_id")
+        id = post_data.get("restaurant_id")
         menu_query = """
             SELECT
-                menu_id
+                id, photo
             FROM
                 menu
             WHERE
-                menu_id = {};
+                restaurant_id = {};
         """.format(id)
         menu = query_data(conn, menu_query)
         response_object["restaurant"] = menu
@@ -580,30 +530,34 @@ def get_comment():
         rating_query = """
             SELECT AVG(deliciousness_rating) AS avg_deliciousness,
                 AVG(environment_rating) AS avg_environment,
-                AVG(cp_rating) AS avg_cp
+                AVG(cp_rating) AS avg_cp,
                 AVG(total_rating) AS avg_total
             FROM feedback_rating
-            WHERE restaurant_id = {};
+            WHERE restaurant_id = {}
+            GROUP BY restaurant_id;
         """.format(id)
         rating = query_data(conn, rating_query)
         response_object["rating"] = rating
 
         comment_query = """
-            SELECT user_id, total_rating, feedback, photo, date_visited
-                FROM feedback_rating
-                WHERE restaurant_id = {};
+            SELECT u.user_name, f.total_rating, f.feedback, f.photo, f.post_date
+            FROM feedback_rating f
+            JOIN users u
+            ON f.user_id = u.id
+            WHERE restaurant_id = {};
         """.format(id)
         comment = query_data(conn, comment_query)
         response_object["comment"] = comment
 
         diary_query = """
             SELECT users.user_name, users.profile_photo
-                FROM diary
-                JOIN users ON diary.user_id = users.user_id
-                WHERE restaurant_id = {};
+            FROM diary
+            JOIN users 
+            ON diary.user_id = users.id
+            WHERE restaurant_id = {};
         """.format(id)
         diary = query_data(conn, diary_query)
-        response_object["comment"] = diary
+        response_object["diary_list"] = diary
 
         conn.close()
         
@@ -659,15 +613,12 @@ def add_list():
         user_id = post_data.get("user_id")
         list_id = post_data.get("list_id")
         is_visited = post_data.get("is_visited")
-        is_favorite = post_data.get("is_favorite")
-        is_wanted = post_data.get("is_wanted")
-
 
         insert_query = """
-            INSERT INTO list (restaurant_id, user_id, list_id, is_visited, is_favorite, is_wanted)
+            INSERT INTO list_info (restaurant_id, user_id, list_id, is_visited)
             VALUES 
-            ({}, {}, {}, {}, {}, {}, "{}", {}, "{}");
-        """.format(res_id, user_id, list_id, is_visited, is_favorite, is_wanted)
+            ({}, {}, {});
+        """.format(res_id, user_id, list_id, is_visited)
 
         conn.execute(text(insert_query))
         conn.execute(text("COMMIT;"))
@@ -696,23 +647,35 @@ def search():
     search_content = request.get_json().get("search_content")
     place_list = request.get_json().get("place_list")
     type_list = request.get_json().get("type_list")
-    
-    place_sql = f"('{place_list[0]} | 台北市'"
-    for i in range(1, len(place_list)):
-        place_sql += f" OR r.adress = '{place_list[1]} | 台北市'"
-    place_sql += ")"
-    
-    type_sql = f"('{type_list[0]}'"
-    for i in range(1, len(type_list)):
-        type_sql += f" OR t.restaurant_type = '{type_list[1]}'"
-    type_sql += ")"
+
+    if(len(place_list) == 0):
+        place_sql = ""
+        if(len(type_list) == 0):
+            type_sql = ""
+        else:
+            type_sql = f"WHERE t.restaurant_type = '{type_list[0]}'"
+            for i in range(1, len(type_list)):
+                type_sql += f" OR t.restaurant_type = '{type_list[1]}'"
+            
+    else:
+        place_sql = f"WHERE r.address = '{place_list[0]} | 台北市'"
+        for i in range(1, len(place_list)):
+            place_sql += f" OR r.address = '{place_list[1]} | 台北市'"
+          
+        if(len(type_list) == 0):
+            type_sql = ""
+        else:
+            type_sql = f"AND t.restaurant_type = ('{type_list[0]}'"
+            for i in range(1, len(type_list)):
+                type_sql += f" OR t.restaurant_type = '{type_list[1]}'"
+            type_sql += ")"
    
     S_DATA = []
 
     try:
         searchResult = f"""
             SELECT r.restaurant_name, r.address, r.phone, AVG(f.total_rating) AS total_rating, COUNT(f.user_id) AS rating_num 
-            FROM restaurant r
+            FROM restaurants r
             LEFT JOIN (
                 SELECT total_rating, user_id, restaurant_id
                 FROM feedback_rating
@@ -720,28 +683,32 @@ def search():
             ON r.id = f.restaurant_id
             LEFT JOIN restaurant_type t
             ON r.id = t.restaurant_id
-            WHERE r.address = {place_sql}
-            AND t.restaurant_type = {type_sql}
+            {place_sql}
+            {type_sql}
             GROUP BY r.id, r.restaurant_name, r.address, r.phone;         
         """
 
         result = conn.execute(text(searchResult))
         cols = list(result.keys())
         data = [dict(zip(cols, row)) for row in result.fetchall()]
-        res_name = []
-        for i in data:
-            res_name.append(i["restaurant_name"])
-        for restaurant_info in res_name:
-            if lcs(restaurant_info) > 0:
-                S_DATA.append(restaurant_info)
+        if search_content == "":
+            response_object['items'] = data
+        else:
+            res_name = []
+            for i in data:
+                res_name.append(i["restaurant_name"])
+            for restaurant_info in res_name:
+                if lcs(restaurant_info) > 0:
+                    S_DATA.append(restaurant_info)
 
-        S_DATA.sort(key=lcs, reverse=True)
+            S_DATA.sort(key=lcs, reverse=True)
 
-        response_object['items'] = S_DATA
-    except:
+            response_object['items'] = S_DATA
+            result.close()
+    except Exception as e:
         response_object['status'] = "algorithm failure"
-
-    result.close()
+        response_object["message"] = str(e)
+    
     conn.close()
 
     return jsonify(response_object)

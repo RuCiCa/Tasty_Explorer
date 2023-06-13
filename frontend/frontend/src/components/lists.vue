@@ -41,7 +41,7 @@
           <div class="by_edited_date">依修改日期</div>
           <div class="by_rest_num">依餐廳數量</div>
           <div class="lists">
-            <div class="list" v-for="list in lists" :key="list.id">
+            <div class="list" v-for="list in lists" :key="list.id" @click="to_diary_one(list.id)">
               <div class="list_name">{{ list.list_name }}</div>
               <div class="info">{{ list.info_isPublic }} | {{ list.info_rest_num }} 家餐廳</div>
               <div class="tag_icon"></div>
@@ -126,6 +126,9 @@ export default {
     go_to_review() {
       this.$router.push('/review');
     },
+    go_to_list(id) {
+      this.$router.push({ name: 'list', params: { list_id: id } });
+    }
 
   },
   created() {

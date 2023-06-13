@@ -130,6 +130,25 @@ export default {
       });
 
   },
+  methods: {
+    to_diary_one(id) {
+      const data = {
+        "user_id": this.user_id,
+        "diary_id": id
+      };
+      axios.post(path, data)
+        .then((res) => {
+          this.$router.push({ name: 'diary_one', params: { user_id: this.user_id, diary_id: id } });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  },
+  created() {
+
+
+  },
 };
 </script>
 

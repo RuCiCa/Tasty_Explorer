@@ -69,7 +69,7 @@ const routes = [
     component: follower,
   },
   {
-    path: "/list",
+    path: "/list/:list_id",
     name: "list",
     component: list,
   },

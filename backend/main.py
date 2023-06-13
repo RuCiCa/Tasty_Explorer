@@ -74,6 +74,7 @@ def get_personal_info(conn, id):
     """.format(id)
 
     follower_query = """
+
     SELECT users.user_name, following_relation.followers_id, users.profile_photo
     FROM 
         following_relation
@@ -90,7 +91,7 @@ def get_personal_info(conn, id):
     """.format(id)
 
     comment_query = """
-    SELECT feedback_rating.id, restaurants.restaurant_name, AVG(feedback_rating.total_rating) AS avg_rating, feedback_rating.feedback, feedback_rating.photo, feedback_rating.post_date
+    SELECT feedback_rating.id, restaurants.restaurant_name, AVG(feedback_rating.total_rating) AS avg_rating, feedback_rating.feedback, feedback_rating.photo, feedback_rating.post_date, restaurants.address
     FROM feedback_rating
     JOIN restaurants ON feedback_rating.restaurant_id = restaurants.id
     WHERE feedback_rating.user_id = {}
@@ -489,6 +490,7 @@ def get_user_comment():
     user_id = get_data.get("user_id")
     try:
         info, diary, follower, following, comment, list, info_count, diary_count, follower_count, following_count, comment_count, list_count = get_personal_info(conn, user_id)
+        
         conn.close()
         for i in comment:
             i["post_date"] = str(i["post_date"])[0:10]

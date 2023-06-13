@@ -50,7 +50,7 @@
           </div>
         </div>
         <div class="nav">
-          <img class="search" src="../assets/search.png" />
+          <img class="search" src="../assets/search.png" @click="go_to_search" />
           <img class="more" src="../assets/more.png" />
           <img class="profile" src="../assets/profile_pressed.png" />
         </div>
@@ -85,7 +85,7 @@ export default {
 
     axios
       // post 過去的東西要包大括號 {}
-      .post(path, {user_id})
+      .post(path, { user_id })
       .then((res) => {
         console.log(res.data);
         this.comment_count = res.data.comment_count;

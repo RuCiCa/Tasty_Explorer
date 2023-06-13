@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="nav">
-          <img class="search" src="../assets/search.png" />
+          <img class="search" src="../assets/search.png" @click="go_to_search" />
           <img class="more" src="../assets/more.png" />
           <img class="profile" src="../assets/profile_pressed.png" />
         </div>
@@ -89,6 +89,10 @@ export default {
     go_to_following() {
       this.$router.push('/following');
     },
+    go_to_search() {
+      this.$router.push('/search');
+    },
+
 
   },
   created() {
@@ -97,7 +101,7 @@ export default {
     console.log(user_id);
 
     axios
-      .post(path, {user_id})
+      .post(path, { user_id })
       .then((res) => {
         console.log(res);
         this.comment_count = res.data.comment_count;

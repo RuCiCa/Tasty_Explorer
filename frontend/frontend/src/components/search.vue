@@ -60,7 +60,7 @@
           <div class="nav" v-if="!showOverlay">
             <img class="search" src="../assets/search_pressed.png" />
             <img class="more" src="../assets/more.png" />
-            <img class="profile" src="../assets/profile.png" />
+            <img class="profile" src="../assets/profile.png" @click="go_to_diary" />
           </div>
         </div>
       </div>
@@ -214,6 +214,9 @@ export default {
   },
 
   methods: {
+    go_to_diary() {
+      this.$router.push('/diary');
+    },
     choose_type() {
       this.showFilter_type_window = !this.showFilter_type_window;
       this.showOverlay = !this.showOverlay;

@@ -229,6 +229,8 @@ def get_all_diary():
         conn.close()
         for i in diary:
             i["date_visited"] = str(i["date_visited"])[0:10]
+            if len(i["diary_content"]) > 70:
+                i["diary_content"] = i["diary_content"][0:70]+" ..."
         response_object["info"] = info
         response_object["diary"] = diary
         response_object["info_count"] = info_count

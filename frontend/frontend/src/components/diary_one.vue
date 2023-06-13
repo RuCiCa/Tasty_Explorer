@@ -44,7 +44,7 @@
               <img class="pic_choose_icon" />
               <div class="diary_text">
                 {{ diary_text }}</div>
-              <div class="back_to_diary">回到日記 -></div>
+              <div class="back_to_diary" @click="go_back_diary">回到日記 -></div>
             </div>
           </div>
         </div>
@@ -126,6 +126,9 @@ export default {
     go_to_review() {
       this.$router.push('/review');
     },
+    go_back_diary(){
+      this.$router.go(-1)
+    }
 
   },
   created() {

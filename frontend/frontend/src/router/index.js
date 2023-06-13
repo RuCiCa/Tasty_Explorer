@@ -87,7 +87,7 @@ const routes = [
     component: diary,
   },
   {
-    path: "/diary_one",
+    path: "/diary_one/:user_id/:diary_id",
     name: "diary_one",
     component: diary_one,
   },

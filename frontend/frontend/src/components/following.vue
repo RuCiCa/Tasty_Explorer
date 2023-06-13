@@ -1,132 +1,42 @@
 <template>
   <div>
-
     <div class="phone">
       <div class="screen">
         <div class="pages">
           <div class="person_info">
             <div class="pic"></div>
             <div class="name_level">
-              <div class="name">xxx美食家</div>
+              <div class="name">{{ user_name }}</div>
               <div class="level">等級:5</div>
             </div>
-            <div class="follower">
-              <div class="num">1</div>
+            <div class="follower" @click="go_to_follower">
+              <div class="num">{{ follower_count }}</div>
               <div class="text">追蹤者</div>
-              <hr />
             </div>
-            <div class="following">
-              <div class="num">10</div>
+            <div class="following" @click="go_to_following">
+              <div class="num">{{ following_count }}</div>
               <div class="text">追蹤中</div>
               <hr />
             </div>
           </div>
           <div class="search_bar"><img class="search_icon" src="" alt="" /></div>
           <div class="followings">
-            <div class="following">
+            <div class="following" v-for="following in followings" :key="following.id">
               <div class="pic"></div>
               <div class="name_level">
-                <div class="name">xxx</div>
+                <div class="name">{{ following.name }}</div>
                 <div class="level">等級:5</div>
               </div>
-              <div class="follow_button">追蹤</div>
+              <div class="follow_button" v-if="following.followed">追蹤</div>
+              <div class="followed_button" v-else>追蹤中</div>
             </div>
-            <div class="following">
-              <div class="pic"></div>
-              <div class="name_level">
-                <div class="name">xxx美食家</div>
-                <div class="level">等級:5</div>
-              </div>
-              <div class="follow_button">追蹤</div>
-            </div>
-            <div class="following">
-              <div class="pic"></div>
-              <div class="name_level">
-                <div class="name">xxx美食家</div>
-                <div class="level">等級:5</div>
-              </div>
-              <div class="follow_button">追蹤</div>
-            </div>
-            <div class="following">
-              <div class="pic"></div>
-              <div class="name_level">
-                <div class="name">xxx</div>
-                <div class="level">等級:5</div>
-              </div>
-              <div class="follow_button">追蹤</div>
-            </div>
-            <div class="following">
-              <div class="pic"></div>
-              <div class="name_level">
-                <div class="name">xxx美食家</div>
-                <div class="level">等級:5</div>
-              </div>
-              <div class="follow_button">追蹤</div>
-            </div>
-            <div class="following">
-              <div class="pic"></div>
-              <div class="name_level">
-                <div class="name">xxx美食家</div>
-                <div class="level">等級:5</div>
-              </div>
-              <div class="follow_button">追蹤</div>
-            </div>
-            <div class="following">
-              <div class="pic"></div>
-              <div class="name_level">
-                <div class="name">xxx</div>
-                <div class="level">等級:5</div>
-              </div>
-              <div class="follow_button">追蹤</div>
-            </div>
-            <div class="following">
-              <div class="pic"></div>
-              <div class="name_level">
-                <div class="name">xxx美食家</div>
-                <div class="level">等級:5</div>
-              </div>
-              <div class="follow_button">追蹤</div>
-            </div>
-            <div class="following">
-              <div class="pic"></div>
-              <div class="name_level">
-                <div class="name">xxx美食家</div>
-                <div class="level">等級:5</div>
-              </div>
-              <div class="follow_button">追蹤</div>
-            </div>
-            <div class="following">
-              <div class="pic"></div>
-              <div class="name_level">
-                <div class="name">xxx</div>
-                <div class="level">等級:5</div>
-              </div>
-              <div class="follow_button">追蹤</div>
-            </div>
-            <div class="following">
-              <div class="pic"></div>
-              <div class="name_level">
-                <div class="name">xxx美食家</div>
-                <div class="level">等級:5</div>
-              </div>
-              <div class="follow_button">追蹤</div>
-            </div>
-            <div class="following">
-              <div class="pic"></div>
-              <div class="name_level">
-                <div class="name">xxx美食家</div>
-                <div class="level">等級:5</div>
-              </div>
-              <div class="follow_button">追蹤</div>
-            </div>
+
           </div>
         </div>
-        <div class="nav"> <img class="search"
-            src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTl7ZE5_0rjyTos3ZuVn6DRQeGcJTcOduSNXuybIvDkMCU4nmPU" /><img
-            class="more"
-            src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTl7ZE5_0rjyTos3ZuVn6DRQeGcJTcOduSNXuybIvDkMCU4nmPU" /><img
-            class="profile"
-            src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTl7ZE5_0rjyTos3ZuVn6DRQeGcJTcOduSNXuybIvDkMCU4nmPU" />
+        <div class="nav">
+          <img class="search" src="../assets/search.png" />
+          <img class="more" src="../assets/more.png" />
+          <img class="profile" src="../assets/profile_pressed.png" />
         </div>
       </div>
     </div>
@@ -141,6 +51,22 @@ export default {
   name: 'TastyExplorer_test',
   data() {
     return {
+      user_name: "XXX美食家",
+      following_count: 0,
+      follower_count: 0,
+      followings: [
+        { id: 1, name: "胖胖", followed: true },
+        { id: 2, name: "胖胖", followed: true },
+        { id: 3, name: "胖胖", followed: true },
+        { id: 4, name: "胖胖", followed: true },
+        { id: 5, name: "胖胖", followed: true },
+        { id: 6, name: "胖胖", followed: true },
+        { id: 7, name: "胖胖", followed: true },
+        { id: 8, name: "胖胖", followed: true },
+        { id: 9, name: "胖胖", followed: true },
+        { id: 10, name: "胖胖", followed: true },
+        { id: 11, name: "胖胖", followed: true },
+      ]
       //   isVisible: true,
     };
   },
@@ -151,6 +77,13 @@ export default {
 
   },
   methods: {
+    go_to_follower() {
+      this.$router.push('/follower');
+    },
+
+    go_to_following() {
+      this.$router.push('/following');
+    },
 
   },
   created() {
@@ -479,6 +412,24 @@ hr {
   font-size: 12px;
   line-height: 15px;
   color: #888888;
+}
+
+.followings .following .follow_button {
+  text-align: center;
+  align-items: center;
+  position: absolute;
+  letter-spacing: 1.25px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 30px;
+  width: 109px;
+  height: 28px;
+  left: 220px;
+  top: 16px;
+  background: #B82C30;
+  border-radius: 5px;
+  color: #fff;
+  padding-bottom: 2px;
 }
 
 .followings .following .follow_button {

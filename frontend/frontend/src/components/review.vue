@@ -38,7 +38,7 @@
           <div class="reviews">
             <div class="review" v-for="(review, index) in reviews" :key="review.id">
               <div class="rest_name">{{ review.rest_name }}</div>
-              <div class="location">{{ review.location_dis }} | {{ review.location_city }}</div>
+              <div class="location">{{ review.location }}</div>
               <div class="like_icon"></div>
               <img class="tag_icon" v-if="review.tag_pressed" src="../assets/bookmark_pressed.png"
                 @click="add_to_list(index)" />
@@ -53,7 +53,7 @@
           </div>
         </div>
         <div class="nav">
-          <img class="search" src="../assets/search.png" />
+          <img class="search" src="../assets/search.png" @click="go_to_search" />
           <img class="more" src="../assets/more.png" />
           <img class="profile" src="../assets/profile_pressed.png" />
         </div>
@@ -79,9 +79,9 @@ export default {
       list_count: 0,
       user_id: 1,
       reviews: [
-        { id: 1, rest_name: "鼎泰豐信義店", tag_pressed: false, location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
-        { id: 2, rest_name: "鼎泰豐信義店", tag_pressed: false, location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
-        { id: 3, rest_name: "鼎泰豐信義店", tag_pressed: false, location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
+        // { id: 1, rest_name: "鼎泰豐信義店", tag_pressed: false, location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
+        // { id: 2, rest_name: "鼎泰豐信義店", tag_pressed: false, location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
+        // { id: 3, rest_name: "鼎泰豐信義店", tag_pressed: false, location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
       ],
       // tag_pressed: false,
       //   isVisible: true,
@@ -93,7 +93,7 @@ export default {
 
     axios
       // post 過去的東西要包大括號 {}
-      .post(path, {user_id})
+      .post(path, { user_id })
       .then((res) => {
         console.log(res);
         this.comment_count = res.data.comment_count;
@@ -102,8 +102,8 @@ export default {
         this.follower_count = res.data.follower_count;
         this.following_count = res.data.following_count;
         this.user_name = res.data.info[0].user_name;
-        for (var i = 0; i < res.data.reviews.length; i++) {
-          this.reviews.push({ id: res.data.reviews[i].id, rest_name: res.data.reviews[i].restaurant_name, tag_pressed: false, location_dis: res.data.reviews[i].address, location_city: "台北市", time: res.data.reviews[i].post_date, rating: res.data.reviews[i].avg_rating, review_text: res.data.reviews[i].feedback });
+        for (var i = 0; i < res.data.user_comment.length; i++) {
+          this.reviews.push({ id: res.data.user_comment[i].diary_id, rest_name: res.data.user_comment[i].restaurant_name, tag_pressed: false, location: res.data.user_comment[i].address, time: res.data.user_comment[i].post_date, rating: res.data.user_comment[i].avg_rating, review_text: res.data.user_comment[i].feedback });
         }
       })
       .catch((error) => {
@@ -131,6 +131,9 @@ export default {
     },
     go_to_review() {
       this.$router.push('/review');
+    },
+    go_to_search() {
+      this.$router.push('/search');
     },
 
 

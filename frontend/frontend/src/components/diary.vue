@@ -47,7 +47,7 @@
           </div>
         </div>
         <div class="nav">
-          <img class="search" src="../assets/search.png" />
+          <img class="search" src="../assets/search.png" @click="go_to_search" />
           <img class="more" src="../assets/more.png" />
           <img class="profile" src="../assets/profile_pressed.png" />
         </div>
@@ -98,10 +98,12 @@ export default {
     go_to_review() {
       this.$router.push('/review');
     },
+    go_to_search() {
+      this.$router.push('/search');
+    },
     to_diary_one(id) {
-      // console.log(id);
       this.$router.push({ name: 'diary_one', params: { user_id: this.user_id, diary_id: id } });
-    }
+    },
 
   },
   created() {
@@ -130,25 +132,7 @@ export default {
       });
 
   },
-  methods: {
-    to_diary_one(id) {
-      const data = {
-        "user_id": this.user_id,
-        "diary_id": id
-      };
-      axios.post(path, data)
-        .then((res) => {
-          this.$router.push({ name: 'diary_one', params: { user_id: this.user_id, diary_id: id } });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  },
-  created() {
 
-
-  },
 };
 </script>
 

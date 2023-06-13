@@ -248,7 +248,7 @@ def get_all_diary():
 def get_diary():
     response_object = {"status": "success"}
     try:
-        # conn = engine.connect()
+        conn = engine.connect()
         get_data = request.get_json()
         user_id = get_data.get("user_id")
         id = get_data.get("diary_id")
@@ -265,18 +265,18 @@ def get_diary():
             WHERE
                 diary.id = {};
         """.format(id)
-        # diary = query_data(conn, diary_query)
+        diary = query_data(conn, diary_query)
         response_object["diary"] = diary
-        # conn.close()
+        conn.close()
 
-        response_object["info"] = 1#info
-        response_object["diary"] = []#diary
-        response_object["info_count"] = 1#info_count
-        response_object["diary_count"] = 2#diary_count
-        response_object["follower_count"] = 7#follower_count
-        response_object["following_count"] = 4#following_count
-        response_object["comment_count"] = 4#comment_count
-        response_object["list_count"] = 5#list_count
+        response_object["info"] = info
+        response_object["diary"] = diary
+        response_object["info_count"] = info_count
+        response_object["diary_count"] = diary_count
+        response_object["follower_count"] = follower_count
+        response_object["following_count"] = following_count
+        response_object["comment_count"] = comment_count
+        response_object["list_count"] = list_count
         
     except Exception as e:
         response_object["status"] = "failed"

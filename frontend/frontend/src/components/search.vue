@@ -9,7 +9,7 @@
           <div class="filter_type" :style="type" @click="choose_type">類型 🔻</div>
           <div class="filter_location" :style="location" @click="choose_location">地區 🔻</div>
           <div class="filter_open" :style="open" @click="choose_open">營業中</div>
-          <div class="recent_search_title">最近搜尋</div>
+          <div class="recent_search_title">搜尋結果</div>
           <div class="restaurants">
             <div class="restaurant" v-for="restaurant in restaurants" :key="restaurant.id">
               <img class="rest_pic" src="https://img.ltn.com.tw/Upload/news/600/2021/04/12/phpG9MbVf.jpg" />
@@ -298,7 +298,7 @@ export default {
           console.log(res);
 
           for (var i = 0; i < res.data.items.length; i++) {
-            this.restaurants.push({ id: res.data.items[i].id, rest_name: res.data.items[i].restaurant_name, location: res.data.items[i].address, rating_number: res.data.items[i].rating_num, rating: res.data.items[i].total_rating, contact_number: res.data.items[i].phone });
+            this.restaurants.push({ id: res.data.items[i].id, rest_name: res.data.items[i].restaurant_name, location: res.data.items[i].address, rating_number: res.data.items[i].rating_num, rating: res.data.items[i].rating, contact_number: res.data.items[i].phone });
           }
 
 
@@ -373,7 +373,7 @@ export default {
           console.log(res);
 
           for (var i = 0; i < res.data.items.length; i++) {
-            this.restaurants.push({ id: res.data.items[i].id, rest_name: res.data.items[i].restaurant_name, location: res.data.items[i].address, rating_number: res.data.items[i].rating_num, rating: res.data.items[i].total_rating, contact_number: res.data.items[i].phone });
+            this.restaurants.push({ id: res.data.items[i].id, rest_name: res.data.items[i].restaurant_name, location: res.data.items[i].address, rating_number: res.data.items[i].rating_num, rating: res.data.items[i].rating, contact_number: res.data.items[i].phone });
           }
 
 

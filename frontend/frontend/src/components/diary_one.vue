@@ -38,11 +38,12 @@
           </div>
           <div class="diarys">
             <div class="diary">
-              <div class="time">{{ diary.time }} 於</div>
-              <div class="rest_name">{{ diary.rest_name }}</div><img class="rest_pic" :src="diary.photo" />
-                <img class="pic_choose_icon" />
+              <div class="time">{{ diary_time }} 於</div>
+              <div class="rest_name">{{ rest_name }}</div><img class="rest_pic"
+                src="https://img.ltn.com.tw/Upload/news/600/2021/04/12/phpG9MbVf.jpg" />
+              <img class="pic_choose_icon" />
               <div class="diary_text">
-                {{ diary.diary_text }}</div>
+                {{ diary_text }}</div>
               <div class="back_to_diary">回到日記 -></div>
             </div>
           </div>
@@ -67,7 +68,7 @@ export default {
   data() {
     return {
       user_name: "XXX美食家",
-      user_id: 1,
+      user_id: this.$route.params.user_id,
       following_count: 0,
       follower_count: 0,
       comment_count: 0,    // comment = review
@@ -75,9 +76,10 @@ export default {
       list_count: 0,
       diary_id: this.$route.params.diary_id,
       photo: "test.jpgg",
-      diarys: [
-        { id: 1, time: "2023.04.15", rest_name: "鼎泰豐信義店", diary_text: "當天天氣晴朗，我決定去鼎泰豐享受美食。一進門就被熱鬧的氣氛和美味的香氣所吸引。我點了一份小籠包和一份酸辣湯，兩者都是鼎泰豐的經典菜品... 更多" }
-      ]
+      diary_time: "",
+      rest_name: "",
+      diary_photo: "test.jpgg",
+      diary_text: "",
       //   isVisible: true,
     };
   },
@@ -88,7 +90,7 @@ export default {
 
     axios
       // post 過去的東西要包大括號 {}
-      .post(path, {user_id}, {diary_id})
+      .post(path, { "user_id": user_id, "diary_id": diary_id })
       .then((res) => {
         console.log(res);
         this.comment_count = res.data.comment_count;
@@ -97,10 +99,12 @@ export default {
         this.follower_count = res.data.follower_count;
         this.following_count = res.data.following_count;
         this.user_name = res.data.info[0].user_name;
-        this.diarys.push({ id: res.data.diary[i].diary_id, time: res.data.diary[i].date_visited, rest_name: res.data.diary[i].restaurant_name, diary_text: res.data.diary[i].diary_content });
+        this.diary_time = res.data.diary[0].date_visited;
+        this.rest_name = res.data.diary[0].restaurant_name;
+        this.diary_text = res.data.diary[0].diary_content;
       })
       .catch((error) => {
-              console.log(error);
+        console.log(error);
       });
   },
   beforeUnmount() {

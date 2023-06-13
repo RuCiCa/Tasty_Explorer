@@ -109,7 +109,7 @@ export default {
     console.log(user_id);
 
     axios
-      .post(path, {user_id})
+      .post(path, { user_id })
       .then((res) => {
         console.log(res);
         this.comment_count = res.data.comment_count;
@@ -130,18 +130,7 @@ export default {
   },
   methods: {
     to_diary_one(id) {
-      const path = "http://localhost:5000/diary_info";
-      const data = {
-        user_id: this.user_id,
-        diary_id: id
-      };
-      axios.post(path, data)
-        .then((res) => {
-          this.$router.push({ name: 'diary_one', params: { user_id: this.user_id, diary_id: id } });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      this.$router.push({ name: 'diary_one', params: { user_id: this.user_id, diary_id: id } });
     }
   },
   created() {

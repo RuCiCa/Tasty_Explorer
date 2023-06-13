@@ -291,14 +291,14 @@ export default {
 
       const path = "http://localhost:5000/search";
 
-
+      this.restaurants = []
       axios
         .post(path, { "search_content": this.search_content, "place_list": this.place_list, "type_list": this.type_list })
         .then((res) => {
           console.log(res);
 
           for (var i = 0; i < res.data.items.length; i++) {
-            this.diarys.push({ id: res.data.items[i].id, rest_name: res.data.items[i].restaurant_name, location: res.data.items[i].address, rating_number: res.data.items[i].rating_num, rating: res.data.items[i].total_rating, contact_number: res.data.items[i].phone });
+            this.restaurants.push({ id: res.data.items[i].id, rest_name: res.data.items[i].restaurant_name, location: res.data.items[i].address, rating_number: res.data.items[i].rating_num, rating: res.data.items[i].total_rating, contact_number: res.data.items[i].phone });
           }
 
 
@@ -366,14 +366,14 @@ export default {
 
       const path = "http://localhost:5000/search";
 
-
+      this.restaurants = []
       axios
         .post(path, { "search_content": this.search_content, "place_list": this.place_list, "type_list": this.type_list })
         .then((res) => {
           console.log(res);
 
           for (var i = 0; i < res.data.items.length; i++) {
-            this.diarys.push({ id: res.data.items[i].id, rest_name: res.data.items[i].restaurant_name, location: res.data.items[i].address, rating_number: res.data.items[i].rating_num, rating: res.data.items[i].total_rating, contact_number: res.data.items[i].phone });
+            this.restaurants.push({ id: res.data.items[i].id, rest_name: res.data.items[i].restaurant_name, location: res.data.items[i].address, rating_number: res.data.items[i].rating_num, rating: res.data.items[i].total_rating, contact_number: res.data.items[i].phone });
           }
 
 

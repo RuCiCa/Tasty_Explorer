@@ -67,7 +67,6 @@
 
 <script>
 import axios from 'axios';
-
 export default {
   name: 'TastyExplorer_test',
   data() {
@@ -78,7 +77,7 @@ export default {
       comment_count: 0,    // comment = review
       diary_count: 0,
       list_count: 0,
-
+      user_id: 1,
       reviews: [
         { id: 1, rest_name: "鼎泰豐信義店", tag_pressed: false, location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
         { id: 2, rest_name: "鼎泰豐信義店", tag_pressed: false, location_dis: "信義區", location_city: "台北市", time: "2 個月前", rating: "❤❤❤", review_text: "美味程度極高，食材新鮮，味道正宗，讓人回味無窮。服務周到，態度友善，令人感到賓至如歸。" },
@@ -89,7 +88,27 @@ export default {
     };
   },
   mounted() {
+    const path = "http://localhost:5000/review";
+    const user_id = this.user_id;
 
+    axios
+      // post 過去的東西要包大括號 {}
+      .post(path, {user_id})
+      .then((res) => {
+        console.log(res);
+        this.comment_count = res.data.comment_count;
+        this.diary_count = res.data.diary_count;
+        this.list_count = res.data.list_count;
+        this.follower_count = res.data.follower_count;
+        this.following_count = res.data.following_count;
+        this.user_name = res.data.info[0].user_name;
+        for (var i = 0; i < res.data.diary.length; i++) {
+          this.diarys.push({ id: res.data.reviews[i].diary_id, rest_name: res.data.reviews[i].restaurant_name, tag_pressed: false, location_dis: res.data.reviews[i].address, location_city: "台北市", time: res.data.reviews[i].post_date, rating: res.data.reviews[i].avg_rating, review_text: res.data.reviews[i].feedback });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   beforeUnmount() {
 
@@ -113,6 +132,7 @@ export default {
     go_to_review() {
       this.$router.push('/review');
     },
+
 
   },
   created() {

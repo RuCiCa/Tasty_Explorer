@@ -3,7 +3,7 @@
 
     <div class="phone">
       <div class="screen">
-        <div class="pages"><img class="arrow"
+        <div class="pages" @click="go_back_lists"><img class="arrow"
             src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQvIOHo-rHocRyC90IbCYaUTqrSvQVBXinULOIbFrgSM2NIxGzu" />
           <div class="list_info">
             <div class="name">{{list_name}}</div>

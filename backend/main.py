@@ -705,7 +705,7 @@ def search():
 
     try:
         searchResult = f"""
-            SELECT r.restaurant_name, r.address, r.phone, AVG(f.total_rating) AS total_rating, COUNT(f.user_id) AS rating_num 
+            SELECT r.id, r.restaurant_name, r.address, r.phone, AVG(f.total_rating) AS total_rating, COUNT(f.user_id) AS rating_num 
             FROM restaurants r
             LEFT JOIN (
                 SELECT total_rating, user_id, restaurant_id

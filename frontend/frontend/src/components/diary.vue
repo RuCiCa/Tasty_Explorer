@@ -110,17 +110,17 @@ export default {
   methods: {
     to_diary_one(id){
       const path = "http://localhost:5000/diary_info";
-      const user = { user_id:this.user_id };
-      const diary = { diary_id: id };
-      axios
-          .post(path, user, diary)
-          .then((res) => {
-              this.$router.push({ name: 'diary_one', params: { user_id: this.userId } });
-              } 
-            )
-          .catch((error) => {
-              console.log(error);
-          });
+      const data = {
+        user_id: this.user_id,
+        diary_id: id
+      };
+      axios.post(path, data)
+        .then((res) => {
+          this.$router.push({ name: 'diary_one', params: { user_id: this.user_id, diary_id: id } });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       }
   },
   created() {

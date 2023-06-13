@@ -257,7 +257,7 @@ def get_diary():
         diary_query = """
             SELECT
                 diary.restaurant_id, diary.date_visited, diary.is_public, 
-                diary.photo, diary.user_id, users.user_name, restaurants.restaurant_name
+                diary.photo, diary.user_id, users.user_name, restaurants.restaurant_name, diary.diary_content
             FROM
                 diary
                 JOIN users ON diary.user_id = users.id
@@ -697,17 +697,19 @@ def search():
                 type_sql += f" OR t.restaurant_type = '{type_list[1]}'"
             
     else:
-        place_sql = f"WHERE r.address = '{place_list[0]} | 台北市'"
+        place_sql = f"WHERE (r.address = '{place_list[0]} | 台北市'"
         for i in range(1, len(place_list)):
             place_sql += f" OR r.address = '{place_list[1]} | 台北市'"
+        place_sql += ")"
           
         if(len(type_list) == 0):
             type_sql = ""
         else:
-            type_sql = f"AND t.restaurant_type = ('{type_list[0]}'"
+            type_sql = f"AND (t.restaurant_type = '{type_list[0]}'"
             for i in range(1, len(type_list)):
                 type_sql += f" OR t.restaurant_type = '{type_list[1]}'"
             type_sql += ")"
+
    
     S_DATA = []
 
@@ -726,7 +728,7 @@ def search():
             {type_sql}
             GROUP BY r.id, r.restaurant_name, r.address, r.phone;         
         """
-
+        print(searchResult)
         result = conn.execute(text(searchResult))
         cols = list(result.keys())
         data = [dict(zip(cols, row)) for row in result.fetchall()]

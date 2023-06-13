@@ -102,8 +102,8 @@ export default {
         this.follower_count = res.data.follower_count;
         this.following_count = res.data.following_count;
         this.user_name = res.data.info[0].user_name;
-        for (var i = 0; i < res.data.diary.length; i++) {
-          this.diarys.push({ id: res.data.reviews[i].diary_id, rest_name: res.data.reviews[i].restaurant_name, tag_pressed: false, location_dis: res.data.reviews[i].address, location_city: "台北市", time: res.data.reviews[i].post_date, rating: res.data.reviews[i].avg_rating, review_text: res.data.reviews[i].feedback });
+        for (var i = 0; i < res.data.reviews.length; i++) {
+          this.reviews.push({ id: res.data.reviews[i].id, rest_name: res.data.reviews[i].restaurant_name, tag_pressed: false, location_dis: res.data.reviews[i].address, location_city: "台北市", time: res.data.reviews[i].post_date, rating: res.data.reviews[i].avg_rating, review_text: res.data.reviews[i].feedback });
         }
       })
       .catch((error) => {

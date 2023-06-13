@@ -298,7 +298,7 @@ export default {
           console.log(res);
 
           for (var i = 0; i < res.data.items.length; i++) {
-            this.diarys.push({ id: res.data.items[i].id, rest_name: res.data.items[i].restaurant_name, location: res.data.items[i].address, rating_number: res.data.items[i].rating_num, rating: res.data.items[i].total_rating, contact_number: res.data.items[i].phone });
+            this.restaurants.push({ id: res.data.items[i].id, rest_name: res.data.items[i].restaurant_name, location: res.data.items[i].address, rating_number: res.data.items[i].rating_num, rating: res.data.items[i].total_rating, contact_number: res.data.items[i].phone });
           }
 
 
@@ -799,7 +799,7 @@ body {
 
 .screen .pages .restaurants .restaurant .rest_name {
   position: absolute;
-  width: 84px;
+  /* width: 84px; */
   height: 17px;
   left: 148px;
   top: 14px;

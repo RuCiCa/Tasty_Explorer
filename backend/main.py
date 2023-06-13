@@ -437,6 +437,8 @@ def get_list_info():
             if i["total_rating"] != None:
                 num = round(i["total_rating"])
                 i["rating"] = "❤"*num
+            else:
+                i["rating"] = ""
         
         response_object["list_info"] = list_info
         response_object["list_res"] = list_res
@@ -729,6 +731,12 @@ def search():
         cols = list(result.keys())
         data = [dict(zip(cols, row)) for row in result.fetchall()]
         if search_content == "":
+            for i in data:
+                if i["total_rating"] != None:
+                    num = round(i["total_rating"])
+                    i["rating"] = "❤"*num
+                else:
+                    i["rating"] = ""
             response_object['items'] = data
         else:
             res_name = []
@@ -736,10 +744,17 @@ def search():
                 res_name.append(i["restaurant_name"])
             for restaurant_info in res_name:
                 if lcs(restaurant_info) > 0:
+                    
                     S_DATA.append(restaurant_info)
 
             S_DATA.sort(key=lcs, reverse=True)
-
+            print(S_DATA)
+            for i in S_DATA:
+                if i["total_rating"] != None:
+                    num = round(i["total_rating"])
+                    i["rating"] = "❤"*num
+                else:
+                    i["rating"] = ""
             response_object['items'] = S_DATA
             result.close()
     except Exception as e:

@@ -13,7 +13,7 @@
             <div class="restaurant" v-for="restaurant in restaurants" :key="restaurant.id">
               <img class="rest_pic" src="https://img.ltn.com.tw/Upload/news/600/2021/04/12/phpG9MbVf.jpg" />
               <div class="rest_name">{{ restaurant.rest_name }}</div>
-              <div class="location">{{ restaurant.location_dis }} | {{ restaurant.location_city }}</div>
+              <div class="location">{{ restaurant.location_dis }}</div>
               <div class="add_icon"></div>
               <div class="rating_title">評分</div>
               <div class="rating_number">| {{ restaurant.rating_number }} 人已評分</div>
@@ -38,34 +38,27 @@ export default {
   data() {
     return {
       list_name: "就是要拉麵",
+      list_id: 1,
       res_num: "35",
       user_name: "XXX美食家",
-      restaurants: [
-        { id: 1, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 987, rating: "❤❤❤", contact_number: "02-2562-1270" },
-        { id: 2, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 97, rating: "❤❤❤❤", contact_number: "02-2562-1270" },
-        { id: 3, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 87, rating: "❤❤❤❤❤", contact_number: "02-2562-1270" },
-        { id: 4, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 98, rating: "❤❤❤❤❤", contact_number: "02-2562-1270" },
-        { id: 5, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 187, rating: "❤", contact_number: "02-2562-1270" },
-        { id: 6, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 383, rating: "❤❤❤❤", contact_number: "02-2562-1270" },
-
-      ]
+      restaurants: []
       //   isVisible: true,
     };
   },
   mounted() {
     const path = "http://localhost:5000/list_info";
-    const user_id = this.user_id;
+    const list_id = this.list_id;
 
     axios
       // post 過去的東西要包大括號 {}
-      .post(path, {user_id})
+      .post(path, {list_id})
       .then((res) => {
         console.log(res.data);
-        this.list_name = res.data.info[0].list_name;
-        this.res_num = res.data.info[0].num_res;
-        this.user_name = res.data.info[0].user_name;
+        this.list_name = res.data.list_info[0].list_name;
+        this.res_num = res.data.list_info[0].num_res;
+        this.user_name = res.data.list_info[0].user_name;
         for (var i = 0; i < res.data.list_res.length; i++) {
-          this.lists.push({ id: i+1, list_name: res.data.list[i].list_name, info_rest_num: res.data.list[i].res_num });
+          this.restaurants.push({ id: i+1, rest_name: res.data.list_res[i].restaurant_name, location_dis: res.data.list_res[i].address, rating_number: res.data.list_res[i].rating_num, rating: res.data.list_res[i].rating, contact_number: res.data.list_res[i].phone});
         }
         // console.log(res.data.diary);
 
@@ -216,7 +209,7 @@ body {
 
 .screen .pages .restaurants .restaurant .rest_name {
   position: absolute;
-  width: 84px;
+  /* width: 84px; */
   height: 17px;
   left: 148px;
   top: 14px;

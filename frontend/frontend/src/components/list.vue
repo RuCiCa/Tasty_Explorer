@@ -62,8 +62,6 @@ export default {
         }
         // console.log(res.data.diary);
 
-
-
       })
       .catch((error) => {
         console.log(error);

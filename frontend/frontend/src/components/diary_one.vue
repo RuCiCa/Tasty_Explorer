@@ -38,12 +38,11 @@
           </div>
           <div class="diarys">
             <div class="diary">
-              <div class="time">2023.04.15 於</div>
-              <div class="rest_name">鼎泰豐信義店</div><img class="rest_pic"
-                src="https://img.ltn.com.tw/Upload/news/600/2021/04/12/phpG9MbVf.jpg" /><img class="pic_choose_icon" />
+              <div class="time">{{ diary.time }} 於</div>
+              <div class="rest_name">{{ diary.rest_name }}</div><img class="rest_pic" :src="diary.photo" />
+                <img class="pic_choose_icon" />
               <div class="diary_text">
-                當天天氣晴朗，我決定去鼎泰豐享受美食。一進門就被熱鬧的氣氛和美味的香氣所吸引。我點了一份小籠包和一份酸辣湯，兩者都是鼎泰豐的經典菜品。小籠包皮薄餡多，肉汁鮮美，每口都讓我感受到豐富的口感。酸辣湯酸甜開胃，辣度恰到好處，非常適合我的口味。除此之外，我還點了一些其他的菜品，如紅油炒手和蝦仁燒賣。紅油炒手口感細膩，香辣可口；蝦仁燒賣則是鮮美多汁，讓我一口接一口。在享受美食的同時，服務員也非常周到，讓我感到賓至如歸。整體來說，這次的鼎泰豐之旅是一次美食之旅，讓我非常滿足。我期待著下一次的品嚐，也推薦給想要嚐鮮的人。
-                籠包皮薄餡多，肉汁鮮美，每口都讓我感受到豐富的口感。酸辣湯酸甜開胃，辣度恰到好處，非常適合我的口味。</div>
+                {{ diary.diary_text }}</div>
               <div class="back_to_diary">回到日記 -></div>
             </div>
           </div>
@@ -67,16 +66,41 @@ export default {
   data() {
     return {
       user_name: "XXX美食家",
+      user_id: 1,
       following_count: 0,
       follower_count: 0,
       comment_count: 0,    // comment = review
       diary_count: 0,
       list_count: 0,
+      diary_id: this.$route.params.diary_id,
+      photo: "test.jpgg",
+      diarys: [
+        { id: 1, time: "2023.04.15", rest_name: "鼎泰豐信義店", diary_text: "當天天氣晴朗，我決定去鼎泰豐享受美食。一進門就被熱鬧的氣氛和美味的香氣所吸引。我點了一份小籠包和一份酸辣湯，兩者都是鼎泰豐的經典菜品... 更多" }
+      ]
       //   isVisible: true,
     };
   },
   mounted() {
+    const path = "http://localhost:5000/diary_info";
+    const user_id = this.user_id;
+    const diary_id = this.diary_id;
 
+    axios
+      // post 過去的東西要包大括號 {}
+      .post(path, {user_id}, {diary_id})
+      .then((res) => {
+        console.log(res);
+        this.comment_count = res.data.comment_count;
+        this.diary_count = res.data.diary_count;
+        this.list_count = res.data.list_count;
+        this.follower_count = res.data.follower_count;
+        this.following_count = res.data.following_count;
+        this.user_name = res.data.info[0].user_name;
+        this.diarys.push({ id: res.data.diary[i].diary_id, time: res.data.diary[i].date_visited, rest_name: res.data.diary[i].restaurant_name, diary_text: res.data.diary[i].diary_content });
+      })
+      .catch((error) => {
+              console.log(error);
+      });
   },
   beforeUnmount() {
 

@@ -61,15 +61,11 @@ export default {
       .post(path, {user_id})
       .then((res) => {
         console.log(res.data);
-        this.comment_count = res.data.list_info;
-        this.diary_count = res.data.diary_count;
-        this.list_count = res.data.list_count;
-        this.follower_count = res.data.follower_count;
-        this.following_count = res.data.following_count;
-        this.
-        this.user_name = res.data.info[2].user_name;
-        for (var i = 0; i < res.data.list.length; i++) {
-          this.lists.push({ id: res.data.list[i].id, list_name: res.data.list[i].list_name, info_rest_num: res.data.list[i].res_num });
+        this.list_name = res.data.info[0].list_name;
+        this.res_num = res.data.info[0].num_res;
+        this.user_name = res.data.info[0].user_name;
+        for (var i = 0; i < res.data.list_res.length; i++) {
+          this.lists.push({ id: i+1, list_name: res.data.list[i].list_name, info_rest_num: res.data.list[i].res_num });
         }
         // console.log(res.data.diary);
 

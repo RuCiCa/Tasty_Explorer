@@ -1,5 +1,5 @@
 import datetime
-
+import math
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -432,6 +432,12 @@ def get_list_info():
         """.format(id)
         list_info = query_data(conn, list_query)
         list_res = query_data(conn, list_res_query)
+        
+        for i in list_res:
+            if i["total_rating"] != None:
+                num = round(i["total_rating"])
+                i["rating"] = "❤"*num
+        
         response_object["list_info"] = list_info
         response_object["list_res"] = list_res
         conn.close()

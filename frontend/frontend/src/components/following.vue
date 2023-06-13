@@ -47,13 +47,18 @@
 
 
 <script>
+import axios from 'axios';
 export default {
   name: 'TastyExplorer_test',
   data() {
     return {
       user_name: "XXX美食家",
+      user_id: 1,
       following_count: 0,
       follower_count: 0,
+      comment_count: 0,    // comment = review
+      diary_count: 0,
+      list_count: 0,
       followings: [
         { id: 1, name: "胖胖", followed: true },
         { id: 2, name: "胖胖", followed: true },
@@ -87,7 +92,28 @@ export default {
 
   },
   created() {
+    const path = "http://localhost:5000/following";
+    const user_id = this.user_id;
+    console.log(user_id);
 
+    axios
+      .post(path, {user_id})
+      .then((res) => {
+        console.log(res);
+        this.comment_count = res.data.comment_count;
+        this.diary_count = res.data.diary_count;
+        this.list_count = res.data.list_count;
+        this.follower_count = res.data.follower_count;
+        this.following_count = res.data.following_count;
+        for (var i = 0; i < res.data.diary.length; i++) {
+          this.followings.push({ id: res.data.followings[i].followers_id, name: res.data.followings[i].user_name, followed: true });
+        }
+        // console.log(res.data.diary)
+
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
 </script>

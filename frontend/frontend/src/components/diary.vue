@@ -109,7 +109,7 @@ export default {
     console.log(user_id);
 
     axios
-      .post(path, user_id)
+      .post(path, {user_id})
       .then((res) => {
         console.log(res);
         this.comment_count = res.data.comment_count;

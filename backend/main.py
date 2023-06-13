@@ -74,19 +74,19 @@ def get_personal_info(conn, id):
     """.format(id)
 
     follower_query = """
-    SELECT users.user_name, following_relation.following_id, users.profile_photo
-    FROM 
-        following_relation
-        JOIN users ON following_relation.followers_id = users.id
-    WHERE followers_id = {};
-    """.format(id)
-
-    following_query = """
     SELECT users.user_name, following_relation.followers_id, users.profile_photo
     FROM 
         following_relation
+        JOIN users ON following_relation.followers_id = users.id
+    WHERE following_id = {};
+    """.format(id)
+
+    following_query = """
+    SELECT users.user_name, following_relation.following_id, users.profile_photo
+    FROM 
+        following_relation
         JOIN users ON following_relation.following_id = users.id
-    WHERE following_relation.following_id = {};
+    WHERE following_relation.followers_id = {};
     """.format(id)
 
     comment_query = """
@@ -127,7 +127,7 @@ def get_personal_info(conn, id):
 def greetings():
     return("Hello, world!")
 
-@app.route("/follow", methods=["POST"])
+@app.route("/following", methods=["POST"])
 def get_follow():
     response_object = {"status": "success"}
     try:
@@ -139,15 +139,15 @@ def get_follow():
             following_id = post_data.get("following_id")
             if follow_or_disfollow:
                 follow_query = """
-                    INSERT INTO following_relation (follower, following)
+                    INSERT INTO following_relation (followers_id, following_id)
                     VALUES 
                     ({}, {});
-                """.format(following_id, user_id)
+                """.format(user_id, following_id)
             else:
                 follow_query = """
                     DELETE FROM following_relation
-                    WHERE follower = {} AND following = {};
-                """.format(following_id, user_id)
+                    WHERE followers_id = {} AND following_id = {};
+                """.format(user_id, following_id)
 
             conn.execute(text(follow_query))
             conn.execute(text("COMMIT;"))
@@ -169,7 +169,7 @@ def get_follow():
     
     return jsonify(response_object)
 
-@app.route("/follower", methods=["GET"])
+@app.route("/follower", methods=["POST"])
 def get_follower():
     response_object = {"status": "success"}
     try:

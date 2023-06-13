@@ -63,27 +63,19 @@
 
 
 <script>
+import axios from 'axios';
 export default {
   name: 'TastyExplorer_test',
   data() {
     return {
       user_name: "XXX美食家",
+      user_id: 1,
       following_count: 0,
       follower_count: 0,
       comment_count: 0,    // comment = review
       diary_count: 0,
       list_count: 0,
-      lists: [
-        { id: 1, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
-        { id: 2, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
-        { id: 3, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
-        { id: 4, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
-        { id: 5, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
-        { id: 6, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
-        { id: 7, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
-        { id: 8, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
-        { id: 9, list_name: "就是要拉麵", info_isPublic: "公開", info_rest_num: 35 },
-      ]
+      lists: []
       //   isVisible: true,
     };
   },
@@ -95,15 +87,15 @@ export default {
       // post 過去的東西要包大括號 {}
       .post(path, {user_id})
       .then((res) => {
-        // console.log(test_time);
+        console.log(res.data);
         this.comment_count = res.data.comment_count;
         this.diary_count = res.data.diary_count;
         this.list_count = res.data.list_count;
         this.follower_count = res.data.follower_count;
         this.following_count = res.data.following_count;
         this.user_name = res.data.info[0].user_name;
-        for (var i = 0; i < res.data.diary.length; i++) {
-          this.diarys.push({ id: res.data.diary[i].diary_id, time: res.data.diary[i].date_visited, rest_name: res.data.diary[i].restaurant_name, diary_text: res.data.diary[i].diary_content });
+        for (var i = 0; i < res.data.list.length; i++) {
+          this.lists.push({ id: res.data.list[i].id, list_name: res.data.list[i].list_name, info_rest_num: res.data.list[i].res_num });
         }
         // console.log(res.data.diary);
 

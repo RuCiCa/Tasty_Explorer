@@ -6,8 +6,8 @@
         <div class="pages"><img class="arrow"
             src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQvIOHo-rHocRyC90IbCYaUTqrSvQVBXinULOIbFrgSM2NIxGzu" />
           <div class="list_info">
-            <div class="name">就是要拉麵</div>
-            <div class="info">公開 | 35 家餐廳 | XXX美食家</div><img class="add_icon" /><img class="more_info_icon" />
+            <div class="name">{{list_name}}</div>
+            <div class="info">公開 | {{ res_num }} 家餐廳 | {{ user_name }}</div><img class="add_icon" /><img class="more_info_icon" />
           </div>
           <div class="restaurants">
             <div class="restaurant" v-for="restaurant in restaurants" :key="restaurant.id">
@@ -32,10 +32,14 @@
 
 
 <script>
+import axios from 'axios';
 export default {
   name: 'TastyExplorer_test',
   data() {
     return {
+      list_name: "就是要拉麵",
+      res_num: "35",
+      user_name: "XXX美食家",
       restaurants: [
         { id: 1, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 987, rating: "❤❤❤", contact_number: "02-2562-1270" },
         { id: 2, rest_name: "鼎泰豐信義店", location_dis: "信義區", location_city: "台北市", rating_number: 97, rating: "❤❤❤❤", contact_number: "02-2562-1270" },
@@ -49,7 +53,32 @@ export default {
     };
   },
   mounted() {
+    const path = "http://localhost:5000/list_info";
+    const user_id = this.user_id;
 
+    axios
+      // post 過去的東西要包大括號 {}
+      .post(path, {user_id})
+      .then((res) => {
+        console.log(res.data);
+        this.comment_count = res.data.list_info;
+        this.diary_count = res.data.diary_count;
+        this.list_count = res.data.list_count;
+        this.follower_count = res.data.follower_count;
+        this.following_count = res.data.following_count;
+        this.
+        this.user_name = res.data.info[2].user_name;
+        for (var i = 0; i < res.data.list.length; i++) {
+          this.lists.push({ id: res.data.list[i].id, list_name: res.data.list[i].list_name, info_rest_num: res.data.list[i].res_num });
+        }
+        // console.log(res.data.diary);
+
+
+
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   beforeUnmount() {
 

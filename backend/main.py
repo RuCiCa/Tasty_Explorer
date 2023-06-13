@@ -10,7 +10,7 @@ today_weekday = datetime.date.today().weekday()
 app = Flask(__name__)
 CORS(app, resources={r"/*":{'origins':"*"}})
 # engine = create_engine("mysql+pymysql://gdsc:NCCUgdsc1234!@34.81.186.58:3306/bricksdata?charset=utf8mb4")
-# engine = create_engine("mysql+pymysql://root:Yu0!newcode@localhost:3306/tastyexplorerdb?charset=utf8mb4")
+engine = create_engine("mysql+pymysql://root:Yu0!newcode@localhost:3306/tastyexplorerdb?charset=utf8mb4")
 
 app.config.from_object(__name__)
 
@@ -98,10 +98,14 @@ def get_personal_info(conn, id):
     """.format(id)
 
     list_query = """
-    SELECT id, list_name
-        FROM lists
-        WHERE user_id = {};
+    SELECT l.id, l.list_name, COUNT(i.restaurant_id) AS res_num
+        FROM lists l
+        JOIN lists_info i
+        ON l.id = i.list_id
+        WHERE user_id = {}
+        GROUP BY l.id;
     """.format(id)
+
 
     
 
@@ -276,7 +280,7 @@ def get_diary():
         
     except Exception as e:
         response_object["status"] = "failed"
-        response_object["message"] = str(e)diary_info
+        response_object["message"] = str(e)
 
     return jsonify(response_object)
 
@@ -387,12 +391,12 @@ def get_all_list():
         response_object["following_count"] = following_count
         response_object["comment_count"] = comment_count
         response_object["list_count"] = list_count
-
     except Exception as e:
         response_object["status"] = "failed"
         response_object["message"] = str(e)
     
     return jsonify(response_object)
+
 
 @app.route("/list_info", methods=["POST"])
 def get_list_info():
@@ -701,7 +705,7 @@ def search():
 
     try:
         searchResult = f"""
-            SELECT r.restaurant_name, r.address, r.phone, AVG(f.total_rating) AS total_rating, COUNT(f.user_id) AS rating_num 
+            SELECT r.id, r.restaurant_name, r.address, r.phone, AVG(f.total_rating) AS total_rating, COUNT(f.user_id) AS rating_num 
             FROM restaurants r
             LEFT JOIN (
                 SELECT total_rating, user_id, restaurant_id

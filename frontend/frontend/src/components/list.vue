@@ -71,7 +71,7 @@ export default {
 
   },
   methods: {
-
+    
   },
   created() {
 

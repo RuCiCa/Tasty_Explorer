@@ -299,11 +299,12 @@ def post_diary():
         content = post_data.get("content")
         photo = post_data.get("photo")
         post_time = post_data.get("post_time")
+        post_time = datetime.datetime.strptime(post_time, '%Y-%m-%d')
 
         diary_query = """
             INSERT INTO diary (restaurant_id, user_id, diary_content, photo, post_time)
             VALUES 
-            ({}, {}, "{}", "{}", {});
+            ({}, {}, "{}", "{}", '{}');
         """.format(res_id, user_id, content, photo, post_time)
 
         conn.execute(text(diary_query))
@@ -376,19 +377,19 @@ def edit_diary():
                     diary.id = {};
             """.format(id)
             diary = query_data(conn, diary_query)
+            conn.execute(text("COMMIT;"))
             response_object["diary"] = diary
         if diary_edit is True:
-            user_id = post_data.get("user_id")
             content = post_data.get("content")
             photo = post_data.get("photo")
             restaurant_id = post_data.get("restaurant_id")
             post_time = post_data.get("post_time")
             diary_edit_query = """
                 UPDATE diary
-                SET content = "{}", photo = "{}", restaurant_id = "{}", post_time = {}
+                SET diary_content = "{}", photo = "{}", restaurant_id = "{}", post_time = '{}'
                 WHERE
-                user_id = {};
-            """.format(content, photo, restaurant_id, post_time, user_id)
+                id = {};
+            """.format(content, photo, restaurant_id, post_time, id)
             conn.execute(text(diary_edit_query))
             conn.execute(text("COMMIT;"))
 

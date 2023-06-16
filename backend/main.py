@@ -396,8 +396,8 @@ def delete_diary():
                     id = {};
             """.format(id)
         get_user_id = query_data(conn, uesr_query)
-
-        if user_id == get_user_id:
+        print(get_user_id)
+        if user_id == get_user_id[0]['user_id']:
             diary_delete_query = """
             DELETE FROM diary
             WHERE id = {};

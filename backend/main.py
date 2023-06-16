@@ -298,12 +298,13 @@ def post_diary():
         user_id = post_data.get("user_id")
         content = post_data.get("content")
         photo = post_data.get("photo")
+        post_time = post_data.get("post_time")
 
         diary_query = """
-            INSERT INTO diary (restaurant_id, user_id, diary_content, photo)
+            INSERT INTO diary (restaurant_id, user_id, diary_content, photo, post_time)
             VALUES 
-            ({}, {}, "{}", "{}");
-        """.format(res_id, user_id, content, photo)
+            ({}, {}, "{}", "{}", {});
+        """.format(res_id, user_id, content, photo, post_time)
 
         conn.execute(text(diary_query))
         conn.execute(text("COMMIT;"))
@@ -345,12 +346,13 @@ def edit_diary():
             content = post_data.get("content")
             photo = post_data.get("photo")
             restaurant_id = post_data.get("restaurant_id")
+            post_time = post_data.get("post_time")
             diary_edit_query = """
                 UPDATE diary
-                SET content = "{}", photo = "{}", restaurant_id = "{}"
+                SET content = "{}", photo = "{}", restaurant_id = "{}", post_time = {}
                 WHERE
                 user_id = {};
-            """.format(content, photo, restaurant_id, user_id)
+            """.format(content, photo, restaurant_id, post_time, user_id)
             conn.execute(text(diary_edit_query))
             conn.execute(text("COMMIT;"))
 

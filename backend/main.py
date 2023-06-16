@@ -353,7 +353,7 @@ def post_diary():
     try:
         conn = engine.connect()
         post_data = request.get_json()
-        res_id = post_data.get("restaurant_id")
+        res_name = post_data.get("restaurant_name")
         user_id = post_data.get("user_id")
         content = post_data.get("content")
         photo = post_data.get("photo")
@@ -363,8 +363,8 @@ def post_diary():
         diary_query = """
             INSERT INTO diary (restaurant_id, user_id, diary_content, photo, post_time)
             VALUES 
-            ({}, {}, "{}", "{}", '{}');
-        """.format(res_id, user_id, content, photo, post_time)
+            ((SELECT id FROM restaurants WHERE restaurant_name = "{}"), {}, "{}", "{}", '{}');
+        """.format(res_name, user_id, content, photo, post_time)
 
         conn.execute(text(diary_query))
         conn.execute(text("COMMIT;"))

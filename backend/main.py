@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, text
+import hashlib
 
 today_weekday = datetime.date.today().weekday()
 
@@ -46,6 +47,12 @@ def open_check(id, conn):
         }
 
     return open_status
+
+def hash_password(password):
+    sha256 = hashlib.sha256()
+    sha256.update(password.encode('utf-8'))
+    hashed_password = sha256.hexdigest()
+    return hashed_password
 
 def query_data(conn, query):
     data = conn.execute(text(query))
@@ -108,8 +115,6 @@ def get_personal_info(conn, id):
     """.format(id)
 
 
-    
-
     info = query_data(conn, info_query)
     diary = query_data(conn, diary_query)
     follower = query_data(conn, follower_query)
@@ -131,6 +136,60 @@ def get_personal_info(conn, id):
 @app.route("/", methods=["GET"])
 def greetings():
     return("Hello, world!")
+
+@app.route('/register', methods=['POST'])
+def register():
+    response_object = {'status': 'success'}
+    response_object['message'] = "信箱註冊成功"
+    try:
+        conn = engine.connect()
+    except:
+        response_object['status'] = "failure"
+        response_object['message'] = "資料庫連線失敗"
+        return jsonify(response_object)
+    post_data = request.get_json()
+    if ((post_data.get("user_email") == None) |
+        (post_data.get("user_password") == None) |
+        (post_data.get("user_name") == None)):
+        response_object['status'] = "failure"
+        response_object['message'] = "有缺失信箱、密碼和使用者名稱回傳值"
+        return jsonify(response_object)
+    try:
+        isRegisted = f"""
+            SELECT IF(SUM(IF(user_email != "{post_data.get("user_email")}", 0, 1))>0, 1, 0) AS exist FROM users;
+        """
+        result = conn.execute(text(isRegisted))
+        result_list = result.fetchall()
+        if (result_list[0][0] == 0):
+            hashed_password = hash_password(post_data.get("user_password"))
+            addAccount = f"""
+            INSERT INTO users (user_email, user_password, user_name)
+            VALUES ("{post_data.get("user_email")}", "{hashed_password}"," {post_data.get("user_name")}");
+            """
+            print(hashed_password)
+            conn.execute(text(addAccount))
+            conn.execute(text("COMMIT;"))
+        else:
+            response_object['status'] = "failure"
+            response_object['message'] = "此信箱已被註冊過"
+            return jsonify(response_object)
+
+        selectUserId = f"""
+            SELECT id FROM users
+            WHERE user_email = "{post_data.get("user_email")}";
+        """
+        result2 = conn.execute(text(selectUserId))
+        result2_list = result2.fetchall()
+        response_object['user_id'] = result2_list[0][0]
+
+    except:
+        response_object['status'] = "failure"
+        response_object['message'] = "SELECT user_id 失敗 或 INSERT 失敗"
+        return jsonify(response_object)
+
+    conn.close()
+    return jsonify(response_object)
+
 
 @app.route("/following", methods=["POST"])
 def get_follow():
@@ -383,8 +442,8 @@ def edit_diary():
                 UPDATE diary
                 SET content = "{}", photo = "{}", restaurant_id = "{}"
                 WHERE
-                user_id = {};
-            """.format(content, photo, restaurant_id, user_id)
+                id = {};
+            """.format(content, photo, restaurant_id, id)
             conn.execute(text(diary_edit_query))
             conn.execute(text("COMMIT;"))
 

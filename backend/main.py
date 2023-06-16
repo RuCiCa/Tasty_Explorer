@@ -182,9 +182,9 @@ def register():
         result2_list = result2.fetchall()
         response_object['user_id'] = result2_list[0][0]
 
-    except:
+    except Exception as e:
         response_object['status'] = "failure"
-        response_object['message'] = "SELECT user_id 失敗 或 INSERT 失敗"
+        response_object['message'] = str(e)
         return jsonify(response_object)
 
     conn.close()

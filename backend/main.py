@@ -319,6 +319,42 @@ def post_diary():
 
     return jsonify(response_object)
 
+@app.route("/diary_delete", methods=["POST"])
+def delete_diary():
+    response_object = {"status": "success"}
+    try:
+        conn = engine.connect()
+        post_data = request.get_json()
+        id = post_data.get("diary_id")
+        user_id = post_data.get("user_id")
+        uesr_query = """
+                SELECT
+                    user_id
+                FROM
+                    diary
+                WHERE
+                    id = {};
+            """.format(id)
+        get_user_id = query_data(conn, uesr_query)
+
+        if user_id == get_user_id:
+            diary_delete_query = """
+            DELETE FROM diary
+            WHERE id = {};
+            """.format(id)
+            conn.execute(text(diary_delete_query))
+            conn.execute(text("COMMIT;"))
+            response_object["message"] = "刪除成功"
+        else:
+            response_object["message"] = "刪除失敗"
+        conn.close()
+        
+    except Exception as e:
+        response_object["status"] = "failed"
+        response_object["message"] = str(e)
+
+    return jsonify(response_object)
+
 @app.route("/diary_edit", methods=["POST"])
 def edit_diary():
     response_object = {"status": "success"}

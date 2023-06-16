@@ -316,65 +316,50 @@ def post_diary():
 
     return jsonify(response_object)
 
-@app.route("/diary_edit", methods=["GET"])
-def get_edit_diary():
-    response_object = {"status": "success"}
-    try:
-        conn = engine.connect()
-        get_data = request.get_json()
-        id = get_data.get("diary_id")
-        
-        diary_query = """
-            SELECT
-                diary.restaurant_id, diary.date_visited, diary.diary_content,
-                diary.photo, diary.user_id, users.user_name, restaurants.restaurant_name
-            FROM
-                diary
-                JOIN users ON diary.user_id = users.id
-                JOIN restaurants ON diary.restaurant_id = restaurants.id
-            WHERE
-                diary.id = {};
-        """.format(id)
-        diary = query_data(conn, diary_query)
-        response_object["diary"] = diary
-        conn.close()
-        
-    except Exception as e:
-        response_object["status"] = "failed"
-        response_object["message"] = str(e)
-
-    return jsonify(response_object)
-
 @app.route("/diary_edit", methods=["POST"])
 def edit_diary():
     response_object = {"status": "success"}
     try:
         conn = engine.connect()
         post_data = request.get_json()
-        user_id = post_data.get("user_id")
-        content = post_data.get("content")
-        photo = post_data.get("photo")
-        restaurant_id = post_data.get("restaurant_id")
-
-        edit_diary_query = """
-            UPDATE diary
-            SET content = "{}", photo = "{}", restaurant_id = "{}"
-            WHERE
-            user_id = {};
-        """.format(content, photo, restaurant_id, user_id)
-
-        conn.execute(text(edit_diary_query))
-        conn.execute(text("COMMIT;"))
+        id = post_data.get("diary_id")
+        diary_edit = post_data.get("diary_edit")
+        if diary_edit is False:
+            diary_query = """
+                SELECT
+                    diary.restaurant_id, diary.date_visited, diary.diary_content,
+                    diary.photo, diary.user_id, users.user_name, restaurants.restaurant_name
+                FROM
+                    diary
+                    JOIN users ON diary.user_id = users.id
+                    JOIN restaurants ON diary.restaurant_id = restaurants.id
+                WHERE
+                    diary.id = {};
+            """.format(id)
+            diary = query_data(conn, diary_query)
+            response_object["diary"] = diary
+        if diary_edit is True:
+            user_id = post_data.get("user_id")
+            content = post_data.get("content")
+            photo = post_data.get("photo")
+            restaurant_id = post_data.get("restaurant_id")
+            diary_edit_query = """
+                UPDATE diary
+                SET content = "{}", photo = "{}", restaurant_id = "{}"
+                WHERE
+                user_id = {};
+            """.format(content, photo, restaurant_id, user_id)
+            conn.execute(text(diary_edit_query))
+            conn.execute(text("COMMIT;"))
 
         conn.close()
-
-        response_object["message"] = "新增成功"
         
     except Exception as e:
         response_object["status"] = "failed"
         response_object["message"] = str(e)
 
     return jsonify(response_object)
+
 
 @app.route("/list", methods=["POST"])
 def get_all_list():

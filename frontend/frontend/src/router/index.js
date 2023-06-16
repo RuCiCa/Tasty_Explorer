@@ -13,6 +13,8 @@ import list from "../components/list.vue";
 import lists from "../components/lists.vue";
 import search from "../components/search.vue";
 import diary from "../components/diary.vue";
+import new_diary from "../components/new_diary.vue";
+import edit_diary from "../components/edit_diary.vue";
 import review from "../components/review.vue";
 import diary_one from "../components/diary_one.vue";
 import restaurant_info from "../components/restaurant_info.vue";
@@ -92,6 +94,16 @@ const routes = [
     path: "/diary",
     name: "diary",
     component: diary,
+  },
+  {
+    path: "/new_diary",
+    name: "new_diary",
+    component: new_diary,
+  },
+  {
+    path: "/edit_diary/:diary_id",
+    name: "edit_diary",
+    component: edit_diary,
   },
   {
     path: "/diary_one/:user_id/:diary_id",

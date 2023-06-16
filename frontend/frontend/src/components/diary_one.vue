@@ -41,7 +41,7 @@
               <div class="time">{{ diary_time }} 於</div>
               <div class="rest_name">{{ rest_name }}</div><img class="rest_pic"
                 src="https://img.ltn.com.tw/Upload/news/600/2021/04/12/phpG9MbVf.jpg" />
-              <img class="pic_choose_icon" />
+              <img class="pic_choose_icon" src="../assets/edit.png" @click="to_edit_diary(diary_id)" />
               <div class="diary_text">
                 {{ diary_text }}</div>
               <div class="back_to_diary" @click="go_back_diary">回到日記 -></div>
@@ -126,9 +126,12 @@ export default {
     go_to_review() {
       this.$router.push('/review');
     },
-    go_back_diary(){
-      this.$router.go(-1)
-    }
+    to_edit_diary(diary_id) {
+      this.$router.push({ name: 'edit_diary', params: { diary_id: diary_id } });
+    },
+    go_back_diary() {
+      this.$router.go(-1);
+    },
 
   },
   created() {
@@ -484,5 +487,13 @@ hr {
   left: 19px;
   top: 37px;
   border-radius: 5px;
+}
+
+.pic_choose_icon {
+  position: absolute;
+  width: 12px;
+  height: 13px;
+  left: 317px;
+  top: 12px;
 }
 </style>

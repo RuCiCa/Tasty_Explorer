@@ -44,13 +44,13 @@
               <img class="pic_choose_icon" src="../assets/edit.png" @click="to_edit_diary(diary_id)" />
               <div class="diary_text">
                 {{ diary_text }}</div>
-              <div class="back_to_diary" @click="go_back_diary">回到日記 -></div>
+              <div class="back_to_diary" @click="go_to_diary">回到日記 -></div>
             </div>
           </div>
         </div>
         <div class="nav">
-          <img class="search" src="../assets/search.png" />
-          <img class="more" src="../assets/more.png" />
+          <img class="search" src="../assets/search.png" @click="go_to_search" />
+          <img class="more" src="../assets/more.png" @click="go_to_new_diary" />
           <img class="profile" src="../assets/profile_pressed.png" />
         </div>
       </div>
@@ -129,9 +129,11 @@ export default {
     to_edit_diary(diary_id) {
       this.$router.push({ name: 'edit_diary', params: { diary_id: diary_id } });
     },
-    go_back_diary() {
-      this.$router.go(-1);
+
+    go_to_new_diary() {
+      this.$router.push('/new_diary');
     },
+
 
   },
   created() {

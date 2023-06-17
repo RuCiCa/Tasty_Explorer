@@ -51,7 +51,7 @@
         </div>
         <div class="nav">
           <img class="search" src="../assets/search.png" @click="go_to_search" />
-          <img class="more" src="../assets/more.png" />
+          <img class="more" src="../assets/more.png" @click="go_to_new_diary" />
           <img class="profile" src="../assets/profile_pressed.png" />
         </div>
       </div>
@@ -128,7 +128,10 @@ export default {
     },
     go_to_list(id) {
       this.$router.push({ name: 'list', params: { list_id: id } });
-    }
+    },
+    go_to_new_diary() {
+      this.$router.push('/new_diary');
+    },
 
   },
   created() {

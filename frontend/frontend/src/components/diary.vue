@@ -48,7 +48,7 @@
         </div>
         <div class="nav">
           <img class="search" src="../assets/search.png" @click="go_to_search" />
-          <img class="more" src="../assets/more.png" />
+          <img class="more" src="../assets/more.png" @click="go_to_new_diary" />
           <img class="profile" src="../assets/profile_pressed.png" />
         </div>
       </div>
@@ -103,6 +103,9 @@ export default {
     },
     to_diary_one(id) {
       this.$router.push({ name: 'diary_one', params: { user_id: this.user_id, diary_id: id } });
+    },
+    go_to_new_diary() {
+      this.$router.push('/new_diary');
     },
 
   },

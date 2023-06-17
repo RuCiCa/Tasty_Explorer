@@ -2,10 +2,9 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Bricks from "../components/BricksTest.vue";
 import Login from "../components/Login.vue";
-import Register from "../components/Register.vue";
+import register from "../components/register.vue";
 import HomePage from "../components/Homepage.vue";
 import Login_2 from "../components/Login_2.vue";
-import Register_2 from "../components/Register_2.vue";
 import Homepage_2 from "../components/Homepage_2.vue";
 import following from "../components/following.vue";
 import follower from "../components/follower.vue";
@@ -31,11 +30,6 @@ const routes = [
     component: Bricks,
   },
   {
-    path: "/register",
-    name: "Register",
-    component: Register,
-  },
-  {
     path: "/login",
     name: "Login",
     component: Login,
@@ -51,9 +45,9 @@ const routes = [
     component: Login_2,
   },
   {
-    path: "/register_2",
-    name: "Register_2",
-    component: Register_2,
+    path: "/register",
+    name: "register",
+    component: register,
   },
   {
     path: "/homepage_2",

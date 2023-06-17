@@ -2,7 +2,8 @@
   <div>
 
     <div class="phone">
-      <div class="screen"> </div><img class="close" src="https://i.postimg.cc/fb8jgLWs/close.png" alt="" />
+      <div class="screen"> </div><img class="close" src="https://i.postimg.cc/fb8jgLWs/close.png" @click="go_back"
+        alt="" />
       <div class="title">編輯日記</div>
       <div class="add_rest">
         <div class="rest_title">餐廳</div>
@@ -73,6 +74,9 @@ export default {
           console.log(error);
         });
 
+    },
+    go_back() {
+      this.$router.go(-1);
     },
 
   },

@@ -35,6 +35,7 @@
 
 
 <script>
+import axios from 'axios';
 export default {
   name: 'TastyExplorer_test',
   data() {

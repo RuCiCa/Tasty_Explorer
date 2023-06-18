@@ -59,7 +59,7 @@
           </div>
           <div class="nav" v-if="!showOverlay">
             <img class="search" src="../assets/search_pressed.png" />
-            <img class="more" src="../assets/more.png" />
+            <img class="more" src="../assets/more.png" @click="go_to_new_diary" />
             <img class="profile" src="../assets/profile.png" @click="go_to_diary" />
           </div>
         </div>
@@ -220,6 +220,9 @@ export default {
     choose_type() {
       this.showFilter_type_window = !this.showFilter_type_window;
       this.showOverlay = !this.showOverlay;
+    },
+    go_to_new_diary() {
+      this.$router.push('/new_diary');
     },
     choose_location() {
       this.showFilter_location_window = !this.showFilter_location_window;

@@ -41,6 +41,7 @@
               <div class="time">{{ diary_time }} 於</div>
               <div class="rest_name">{{ rest_name }}</div><img class="rest_pic"
                 src="https://img.ltn.com.tw/Upload/news/600/2021/04/12/phpG9MbVf.jpg" />
+              <img class="delete_icon" src="../assets/delete.png" @click="delete_diary(diary_id)" />
               <img class="pic_choose_icon" src="../assets/edit.png" @click="to_edit_diary(diary_id)" />
               <div class="diary_text">
                 {{ diary_text }}</div>
@@ -132,6 +133,22 @@ export default {
 
     go_to_new_diary() {
       this.$router.push('/new_diary');
+    },
+    delete_diary(diary_id) {
+      const path = "http://localhost:5000/diary_info";
+      const user_id = this.user_id;
+      const diary_id = this.diary_id;
+
+      axios
+        // post 過去的東西要包大括號 {}s
+        .post(path, { "user_id": user_id, "diary_id": diary_id, "isDelete": false })
+        .then((res) => {
+          this.$router.push('/diary');
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
     },
 
 
@@ -496,6 +513,14 @@ hr {
   width: 12px;
   height: 13px;
   left: 317px;
+  top: 12px;
+}
+
+.delete_icon {
+  position: absolute;
+  height: 15px;
+  width: 15px;
+  left: 295px;
   top: 12px;
 }
 </style>

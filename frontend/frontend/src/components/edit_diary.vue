@@ -44,6 +44,7 @@ export default {
       restaurant: "",
       date: "",
       text: "",
+      restaurant_id: 0,
 
 
 
@@ -58,8 +59,8 @@ export default {
   },
   methods: {
     post_diary() {
-      const diary_info = { user_id: 1, photo: "test4.jpg", content: this.text, restaurant_name: this.restaurant, post_time: this.date };
-      const path = "http://localhost:5000/diary_post";
+      const diary_info = { content: this.text, photo: "test4.jpg", restaurant_id: this.restaurant_id, "diary_id": this.$route.params.diary_id, post_time: this.date, "diary_edit": true };
+      const path = "http://localhost:5000/diary_edit";
       axios
         // post 過去的東西要包大括號 {}
         .post(path, diary_info)
@@ -92,6 +93,7 @@ export default {
         this.date = res.data.diary[0].date_visited;
         this.text = res.data.diary[0].diary_content;
         this.restaurant = res.data.diary[0].restaurant_name;
+        this.restaurant_id = res.data.diary[0].restaurant_id;
 
       })
       .catch((error) => {

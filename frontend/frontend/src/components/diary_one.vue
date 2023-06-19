@@ -60,8 +60,6 @@
   </div>
 </template>
 
-
-
 <script>
 import axios from 'axios';
 export default {
@@ -112,6 +110,7 @@ export default {
 
   },
   methods: {
+
     go_to_follower() {
       this.$router.push('/follower');
     },
@@ -127,6 +126,7 @@ export default {
     go_to_review() {
       this.$router.push('/review');
     },
+
     to_edit_diary(diary_id) {
       this.$router.push({ name: 'edit_diary', params: { diary_id: diary_id } });
     },
@@ -134,10 +134,11 @@ export default {
     go_to_new_diary() {
       this.$router.push('/new_diary');
     },
+
     delete_diary(diary_id) {
       const path = "http://localhost:5000/diary_info";
       const user_id = this.user_id;
-      const diary_id = this.diary_id;
+
 
       axios
         // post 過去的東西要包大括號 {}s

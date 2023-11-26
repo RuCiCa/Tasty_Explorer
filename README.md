@@ -11,3 +11,7 @@ Welcome to Tasty Explorer, an innovative mobile application that aims to revolut
 
 Tasty Explorer distinguishes itself from other food mapping platforms through its unique competitive advantages. Firstly, our app provides a tailored dining experience by allowing users to personalize their search filters based on factors like price, food type, satisfaction, distance, and dining options. This customization empowers users to find exactly what they are looking for, whether it's a budget-friendly breakfast spot, a trendy beverage shop, or a hidden gem for snacks.
 Additionally, Tasty Explorer addresses the need for comprehensive restaurant information. Our app offers detailed insights into each establishment, including menus, price ranges, ratings, reviews, contact information, business hours, and even reservation services. This wealth of data empowers users to make informed decisions and ensures they have all the necessary information at their fingertips.
+
+### Functional descomposition:
+https://www.figma.com/file/Ov6XblX9oKEBKxlFfwMPLx/Functional-Decomposition-for-Tasty-Explorer?type=whiteboard&node-id=0-1&t=r9S1JXri4ODvSrTs-0
+
